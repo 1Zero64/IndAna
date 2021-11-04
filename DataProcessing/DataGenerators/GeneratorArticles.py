@@ -2,22 +2,26 @@ import pandas as pd
 import numpy 
 import random
 
-articles = {
-    # Article: [BestByPeriod, Unit]
-    'Apple': [14, 'kg'],
-    'Milk': [7, 'l'],
-    'Toilet Paper': ['', 'pcs']
-}
+def generateArticlesData():
 
-columns = ['ID', 'Article', 'BestByPeriod', 'Unit']
+    articles = {
+        # Article: [BestByPeriod, Unit]
+        'Apple': [14, 'kg'],
+        'Milk': [7, 'l'],
+        'Toilet Paper': ['', 'pcs']
+    }
 
-df = pd.DataFrame(columns=columns)
+    columns = ['ID', 'Article', 'BestByPeriod', 'Unit']
 
-for i in range(3):
-    article = random.choice(list(articles.keys()))
-    bestByPeriod = articles[article][0]
-    unit = articles[article][1]
+    df = pd.DataFrame(columns=columns)
 
-    df.loc[i] = [i, article, bestByPeriod, unit]
+    for i in range(3):
+        article = random.choice(list(articles.keys()))
+        bestByPeriod = articles[article][0]
+        unit = articles[article][1]
 
-    df.to_csv('/Users/theresaherr/Desktop/IndAna/DataProcessing/Datasets/Articles.csv')
+        df.loc[i] = [i, article, bestByPeriod, unit]
+
+        df.to_csv('articles_dummyData.csv')
+
+return df
