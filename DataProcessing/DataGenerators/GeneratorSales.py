@@ -1,15 +1,19 @@
 # author Niko Kauz
-# Version 1.0
+# Version 1.1
 # Generates sales data and writes it into a json document.
 # This json document is located in ../Datasets/Sales/sales.json
 # Simple approach: Date instead of DateTime and supermarkets are open at all days
+# Updates:
+# Updated start and end date as discussed in meeting
+# Function returns a dataframe now with date and soldArticles
 
 import json
 import pandas as pd
 import random
 
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
-# No return yet.
+# Returns dataframe with date and soldArticles list
+
 def generateSalesData(numberOfDataToGenerate=5000):
     # Read all articles as dataframe from articles.csv
     df = pd.read_csv("../Datasets/Articles/articles.csv")
@@ -18,7 +22,8 @@ def generateSalesData(numberOfDataToGenerate=5000):
     finalJSON = []
 
     # Generates a list of dateTime. Converts them then into dates.
-    dateTimes = pd.date_range(start="2020-01-01", end="2021-11-01")
+    # Starts a 01. January 2020 and ends at 31. Oktober 2021
+    dateTimes = pd.date_range(start="2020-01-01", end="2021-10-31")
     onlyDate = dateTimes.date
 
     print("Starting to generate data...")
@@ -71,5 +76,18 @@ def generateSalesData(numberOfDataToGenerate=5000):
     # Save data in json in json document.
     with open('../Datasets/Sales/sales.json', 'w') as outfile:
         json.dump(finalJSON, outfile, indent=4)
-
     print("Data saved in ../Datasets/Sales/sales.json.")
+
+    # Generating dataframe with columns date and soldArticles
+    columns = ['date', 'soldArticles']
+    salesDataFrame = pd.DataFrame(columns=columns)
+
+    print("Generating dataframe...")
+    for i in range(len(finalJSON)):
+        # Fill in dataframe with json data dependent on json length
+        salesDataFrame.loc[i] = [finalJSON[i]['date'], finalJSON[i]["soldArticles"]]
+
+    print(salesDataFrame)
+
+    print("Dataframe generated.")
+    return salesDataFrame
