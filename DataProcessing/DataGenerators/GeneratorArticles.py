@@ -1,27 +1,33 @@
+# python3 GeneratorArticles.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Theresa Herr
+# Created Date: Thu November 11 2021
+# Version: 1.0
+# Description: This file generates articles data and list them as a dataframe into a csv file
+# ===========================================================================================
+
 import pandas as pd
-import numpy 
-import random
 
 def generateArticlesData():
 
-    articles = {
-        # Article: [BestByPeriod, Unit]
-        'Apple': [14, 'kg'],
-        'Milk': [7, 'l'],
-        'Toilet Paper': ['', 'pcs']
-    }
+    columns = ['Article', 'Best By Period', 'Unit']
 
-    columns = ['ID', 'Article', 'BestByPeriod', 'Unit']
+    articles = [
+        ('Apple', 14, 'kg'),
+        ('Milk', 7, 'l'),
+        ('Toilet Paper', '', 'pcs')
+    ]
 
-    df = pd.DataFrame(columns=columns)
+    articlesDataFrame = pd.DataFrame(columns=columns, data = articles)
 
-    for i in range(3):
-        article = random.choice(list(articles.keys()))
-        bestByPeriod = articles[article][0]
-        unit = articles[article][1]
+    # to start dataframe index at 1
+    articlesDataFrame.index = articlesDataFrame.index + 1
 
-        df.loc[i] = [i, article, bestByPeriod, unit]
+    articlesDataFrame.to_csv('./DataProcessing/Datasets/Articles/articles.csv', index_label='ID')
+    
+    # print(articlesDataFrame)
+    
+    return articlesDataFrame
 
-        df.to_csv('articles_dummyData.csv')
-
-return df
+generateArticlesData()
