@@ -1,11 +1,12 @@
 # author Niko Kauz
-# Version 1.1
+# Version 1.2
 # Generates sales data and writes it into a json document.
 # This json document is located in ../Datasets/Sales/sales.json
 # Simple approach: Date instead of DateTime and supermarkets are open at all days
 # Updates:
 # Updated start and end date as discussed in meeting
 # Function returns a dataframe now with date and soldArticles
+# Improved performance
 
 import json
 import pandas as pd
@@ -21,21 +22,22 @@ def generateSalesData(numberOfDataToGenerate=5000):
     # List to contain the dictionaries. Will be the json to save in a file later.
     finalJSON = []
 
+    # Generating dataframe with columns date and soldArticles
+    columns = ['date', 'soldArticles']
+    salesDataFrame = pd.DataFrame(columns=columns)
+
     # Generates a list of dateTime. Converts them then into dates.
     # Starts a 01. January 2020 and ends at 31. Oktober 2021
-    dateTimes = pd.date_range(start="2020-01-01", end="2021-10-31")
-    onlyDate = dateTimes.date
+    dates = pd.date_range(start="2020-01-01", end="2021-10-31").date
 
-    print("Starting to generate data...")
+    print("Generating data and adding it to the dataframe...")
 
     # Loop to create the first layer in json. date and soldArticles
     for sale in range(numberOfDataToGenerate):
-        # Selects a random date from date list
-        selectedDate = onlyDate[random.randint(0, len(onlyDate) - 1)]
 
-        # Creates dictionary with date and soldArticles list key, value pairs.
+        # Creates dictionary with random date and soldArticles list key, value pairs.
         firstLevelJSON = {
-            "date": str(selectedDate),
+            "date": str(dates[random.randint(0, len(dates) - 1)]),
             "soldArticles": []
         }
 
@@ -67,27 +69,20 @@ def generateSalesData(numberOfDataToGenerate=5000):
 
         # Append generated first layer to finalJson list and continue with next loop instance.
         finalJSON.append(firstLevelJSON)
+        # Fill in dataframe with json data dependent on json length
+        salesDataFrame.loc[sale] = [firstLevelJSON['date'], firstLevelJSON["soldArticles"]]
 
-    print("Data generated. Saving data to a json file...")
+    print("Data and dataframe generated. Saving data to a json file...")
 
     # Sort by date ascending.
     finalJSON.sort(key=lambda date: date["date"])
+    salesDataFrame = salesDataFrame.sort_values("date").reset_index(drop=True)
+
+    print(salesDataFrame)
 
     # Save data in json in json document.
     with open('../Datasets/Sales/sales.json', 'w') as outfile:
         json.dump(finalJSON, outfile, indent=4)
     print("Data saved in ../Datasets/Sales/sales.json.")
 
-    # Generating dataframe with columns date and soldArticles
-    columns = ['date', 'soldArticles']
-    salesDataFrame = pd.DataFrame(columns=columns)
-
-    print("Generating dataframe...")
-    for i in range(len(finalJSON)):
-        # Fill in dataframe with json data dependent on json length
-        salesDataFrame.loc[i] = [finalJSON[i]['date'], finalJSON[i]["soldArticles"]]
-
-    print(salesDataFrame)
-
-    print("Dataframe generated.")
     return salesDataFrame
