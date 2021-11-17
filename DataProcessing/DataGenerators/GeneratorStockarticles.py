@@ -1,7 +1,7 @@
 # author Kevin Hilzinger
 # version 1
 # function to create stock article data
-# assumption:   production dates are within 14 days prior to 1 day prior to current date
+# assumption:   production dates are within 5 days prior to 1 day prior to current date
 #               lower and upper quantity limit is same for every article
 
 import pandas as pd
@@ -25,12 +25,12 @@ def generateStockArticles():
     # today = todayInit.strftime("%y-%m-%d")
     # possible production date options
     # dates = pd.date_range(start=today-14, end=today-1)
-    dates = pd.date_range(date.today() - timedelta(days=14), date.today() - timedelta(days=2))
+    dates = pd.date_range(date.today() - timedelta(days=5), date.today() - timedelta(days=2))
     print()
     print("creating new dataframe")
 
     # set dataframe columns
-    columns = ['ID', 'ProductionDate', 'Quantity']
+    columns = ['ArticleID', 'ProductionDate', 'Quantity']
     stock = pd.DataFrame(columns=columns)
 
     print("creating data")
@@ -40,9 +40,9 @@ def generateStockArticles():
 
         productionDate = dates[random.randint(0, len(dates) - 1)]
         quantity = random.randint(0, 20)
-        stock[i] = [i, productionDate.strftime("%y-%m-%d"), quantity]
+        stock.loc[i] = [i,productionDate.strftime("%y-%m-%d"), quantity]
 
-    articlesDataFrame.to_csv('./DataProcessing/Datasets/Stockarticles/stockarticles.csv', index_label='ID')
+    stock.to_csv('../Datasets/Stockarticles/stockarticles.csv', index_label='ID')
     return stock
 
 if __name__ == '__main__':
