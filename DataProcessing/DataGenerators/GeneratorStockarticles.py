@@ -42,7 +42,7 @@ def generateStockArticles():
         quantity = random.randint(0, 20)
         stock[i] = [i, productionDate.strftime("%y-%m-%d"), quantity]
 
-    articlesDataFrame.to_csv('./DataProcessing/Datasets/Stockarticles/stockarticles.csv', index_label='ID')
+    stock.to_csv('./DataProcessing/Datasets/Stockarticles/stockarticles.csv', index_label='ID')
     return stock
 
 if __name__ == '__main__':
