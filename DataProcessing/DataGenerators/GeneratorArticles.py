@@ -24,10 +24,10 @@ def generateArticlesData():
     # to start dataframe index at 1
     articlesDataFrame.index = articlesDataFrame.index + 1
 
-    articlesDataFrame.to_csv('./DataProcessing/Datasets/Articles/articles.csv', index_label='ID')
+    articlesDataFrame.to_csv('../Datasets/Articles/articles.csv', index_label='ID')
     
     # print(articlesDataFrame)
     
     return articlesDataFrame
 
-generateArticlesData()
+#generateArticlesData()
