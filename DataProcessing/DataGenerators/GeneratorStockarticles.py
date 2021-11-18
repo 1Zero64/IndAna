@@ -44,6 +44,3 @@ def generateStockArticles():
 
     stock.to_csv('../Datasets/Stockarticles/stockarticles.csv', index_label='ID')
     return stock
-
-if __name__ == '__main__':
-    generateStockArticles()

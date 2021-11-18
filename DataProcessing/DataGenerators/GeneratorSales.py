@@ -15,74 +15,78 @@ import random
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
 # Returns dataframe with date and soldArticles list
 
-def generateSalesData(numberOfDataToGenerate=5000):
-    # Read all articles as dataframe from articles.csv
-    df = pd.read_csv("../Datasets/Articles/articles.csv")
+def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
 
-    # List to contain the dictionaries. Will be the json to save in a file later.
-    finalJSON = []
+    if hasToBeGenerated:
+        # Read all articles as dataframe from articles.csv
+        df = pd.read_csv("../Datasets/Articles/articles.csv")
 
-    # Generating dataframe with columns date and soldArticles
-    columns = ['date', 'soldArticles']
-    salesDataFrame = pd.DataFrame(columns=columns)
+        # List to contain the dictionaries. Will be the json to save in a file later.
+        finalJSON = []
 
-    # Generates a list of dateTime. Converts them then into dates.
-    # Starts a 01. January 2020 and ends at 31. Oktober 2021
-    dates = pd.date_range(start="2020-01-01", end="2021-10-31").date
+        # Generating dataframe with columns date and soldArticles
+        columns = ['date', 'soldArticles']
+        salesDataFrame = pd.DataFrame(columns=columns)
 
-    print("Generating data and adding it to the dataframe...")
+        # Generates a list of dateTime. Converts them then into dates.
+        # Starts a 01. January 2020 and ends at 31. Oktober 2021
+        dates = pd.date_range(start="2020-01-01", end="2021-10-31").date
 
-    # Loop to create the first layer in json. date and soldArticles
-    for sale in range(numberOfDataToGenerate):
+        print("Generating data and adding it to the dataframe...")
 
-        # Creates dictionary with random date and soldArticles list key, value pairs.
-        firstLevelJSON = {
-            "date": str(dates[random.randint(0, len(dates) - 1)]),
-            "soldArticles": []
-        }
+        # Loop to create the first layer in json. date and soldArticles
+        for sale in range(numberOfDataToGenerate):
 
-        # Creates a random number of sold articles.
-        numberOfSoldArticles = random.randint(1, df.shape[0])
-        # List of used articles, so there are no duplicate articles in one sale.
-        # Clears the list for every new first layer
-        usedArticleIds = []
+            # Creates dictionary with random date and soldArticles list key, value pairs.
+            firstLevelJSON = {
+                "date": str(dates[random.randint(0, len(dates) - 1)]),
+                "soldArticles": []
+            }
 
-        # Create numberOfSoldArticles soldArticles elements for the soldArticles list.
-        for number in range(numberOfSoldArticles):
-            # Pick random articleID from dataframe.
-            articleId = int(df.iloc[random.randint(0, df.shape[0] - 1)]["ID"])
-            # Create a random quantity for that article.
-            soldArticles = random.randint(1, 5)
-            # Check if article ist already used.
-            if articleId in usedArticleIds:
-                # If yes repeat the loop instance.
-                number -= 1
-                continue
-            else:
-                # If not append articleId with quantity to soldArticles list in first Layer.
-                firstLevelJSON.get("soldArticles").append({
-                    "articleId": articleId,
-                    "quantity": soldArticles
-                })
-                # Append articleId to usedArticleIds list.
-                usedArticleIds.append(articleId)
+            # Creates a random number of sold articles.
+            numberOfSoldArticles = random.randint(1, df.shape[0])
+            # List of used articles, so there are no duplicate articles in one sale.
+            # Clears the list for every new first layer
+            usedArticleIds = []
 
-        # Append generated first layer to finalJson list and continue with next loop instance.
-        finalJSON.append(firstLevelJSON)
-        # Fill in dataframe with json data dependent on json length
-        salesDataFrame.loc[sale] = [firstLevelJSON['date'], firstLevelJSON["soldArticles"]]
+            # Create numberOfSoldArticles soldArticles elements for the soldArticles list.
+            for number in range(numberOfSoldArticles):
+                # Pick random articleID from dataframe.
+                articleId = int(df.iloc[random.randint(0, df.shape[0] - 1)]["ID"])
+                # Create a random quantity for that article.
+                soldArticles = random.randint(1, 5)
+                # Check if article ist already used.
+                if articleId in usedArticleIds:
+                    # If yes repeat the loop instance.
+                    number -= 1
+                    continue
+                else:
+                    # If not append articleId with quantity to soldArticles list in first Layer.
+                    firstLevelJSON.get("soldArticles").append({
+                        "articleId": articleId,
+                        "quantity": soldArticles
+                    })
+                    # Append articleId to usedArticleIds list.
+                    usedArticleIds.append(articleId)
 
-    print("Data and dataframe generated. Saving data to a json file...")
+            # Append generated first layer to finalJson list and continue with next loop instance.
+            finalJSON.append(firstLevelJSON)
+            # Fill in dataframe with json data dependent on json length
+            salesDataFrame.loc[sale] = [firstLevelJSON['date'], firstLevelJSON["soldArticles"]]
 
-    # Sort by date ascending.
-    finalJSON.sort(key=lambda date: date["date"])
-    salesDataFrame = salesDataFrame.sort_values("date").reset_index(drop=True)
+        print("Data and dataframe generated. Saving data to a json file...")
 
-    print(salesDataFrame)
+        # Sort by date ascending.
+        finalJSON.sort(key=lambda date: date["date"])
+        salesDataFrame = salesDataFrame.sort_values("date").reset_index(drop=True)
 
-    # Save data in json in json document.
-    with open('../Datasets/Sales/sales.json', 'w') as outfile:
-        json.dump(finalJSON, outfile, indent=4)
-    print("Data saved in ../Datasets/Sales/sales.json.")
+        print(salesDataFrame)
+
+        # Save data in json in json document.
+        with open('../Datasets/Sales/sales.json', 'w') as outfile:
+            json.dump(finalJSON, outfile, indent=4)
+        print("Data saved in ../Datasets/Sales/sales.json.")
+    else:
+        salesDataFrame = pd.read_json("../Datasets/Sales/sales.json")
 
     return salesDataFrame
