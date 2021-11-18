@@ -11,35 +11,21 @@ def prepareWeatherData(loadingMode='old'):
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck),
     #               tsun (time of sunshine)
 
-    weather = []
-    if loadingMode.lower() == 'old':
-        weather = pd.read_csv('./Datasets/Weather/weather_012019-102021.csv')
-    elif loadingMode.lower() == 'new':
-        weather = dg.gWeather.generateWeatherData()
-
+    weather = dg.gWeather.generateWeatherData()
     weather['date'] = pd.to_datetime(weather['date'])
     weather = weather.drop(columns=['prcp', 'snow', 'wdir', 'wspd', 'wpgt', 'pres', 'tsun'])
     return weather
 
 
-def prepareArticlesData(loadingMode='old'):
-    articles = []
-    if loadingMode.lower() == 'old':
-        articles = pd.read_csv('./Datasets/Articles/articles.csv')
-    elif loadingMode.lower() == 'new':
-        articles = dg.gArticles.generateArticlesData()
-
+def prepareArticlesData():
+    # get ArticlesData (without parameter: use already generatedData
+    articles = dg.gArticles.generateArticlesData()
     articles = articles.replace(r'^s*$', float('NaN'), regex=True)
     return articles
 
 
-def prepareSalesData(loadingMode='old'):
-    # sales = pd.DataFrame()
-    # if loadingMode.lower() == 'old':
-    #     sales = pd.read_json("./Datasets/Sales/sales.json")
-    # elif loadingMode.lower() == 'new':
-    #     sales = dg.gSales.generateSalesData()
-
+def prepareSalesData():
+    #get SalesData (without parameter: use already generatedData
     sales = dg.gSales.generateSalesData()
 
     #Get unique dates of sales dataframe
