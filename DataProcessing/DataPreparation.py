@@ -89,5 +89,13 @@ def prepareSalesData():
                 preparedSales.loc[row, key] = value
         row += 1
 
+    #changing article id columnnames to include "articleId_"
+    for index, name in enumerate(columnNames):
+        if type(name) == int:
+            columnNames[index] = 'articleId_' + str(name)
+
+    preparedSales.columns = columnNames
+
+    #converting date string to datetime
     preparedSales['date'] = pd.to_datetime(preparedSales['date'])
     return preparedSales
