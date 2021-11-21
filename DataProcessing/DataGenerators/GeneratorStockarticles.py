@@ -44,5 +44,5 @@ def generateStockArticles(hasToBeGenerated=False):
 
         stock.to_csv('../Datasets/Stockarticles/stockarticles.csv', index_label='ID')
     else:
-        stock = pd.read_csv('../Datasets/Stockarticles/stockarticles.csv')
+        stock = pd.read_csv('../Datasets/Stockarticles/stockarticles.csv', index_col=False)
     return stock

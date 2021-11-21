@@ -9,25 +9,23 @@
 
 import pandas as pd
 
-def generateArticlesData():
+def generateArticlesData(hasToBeGenerated=False):
+    if hasToBeGenerated:
+        columns = ['Article', 'Best By Period', 'Unit']
 
-    columns = ['Article', 'Best By Period', 'Unit']
+        articles = [
+            ('Apple', 14, 'kg'),
+            ('Milk', 7, 'l'),
+            ('Toilet Paper', '', 'pcs')
+        ]
 
-    articles = [
-        ('Apple', 14, 'kg'),
-        ('Milk', 7, 'l'),
-        ('Toilet Paper', '', 'pcs')
-    ]
+        articlesDataFrame = pd.DataFrame(columns=columns, data=articles)
 
-    articlesDataFrame = pd.DataFrame(columns=columns, data = articles)
+        # to start dataframe index at 1
+        articlesDataFrame.index = articlesDataFrame.index + 1
 
-    # to start dataframe index at 1
-    articlesDataFrame.index = articlesDataFrame.index + 1
-
-    articlesDataFrame.to_csv('../Datasets/Articles/articles.csv', index_label='ID')
-    
-    # print(articlesDataFrame)
+        articlesDataFrame.to_csv('../Datasets/Articles/articles.csv', index_label='ID')
+    else:
+        articlesDataFrame = pd.read_csv('../Datasets/Articles/articles.csv', index_col=False)
     
     return articlesDataFrame
-
-#generateArticlesData()
