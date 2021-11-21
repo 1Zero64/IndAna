@@ -24,6 +24,14 @@ def prepareArticlesData():
     return articles
 
 
+def prepareStockArticlesData():
+    # get ArticlesData (without parameter: use already generatedData
+    stockArticles = dg.gStockarticles.generateStockArticles()
+    print(stockArticles)
+    articles = prepareArticlesData()
+    print(articles)
+    articles = articles.drop(columns=['Article', 'Unit'])
+
 def prepareSalesData():
     #get SalesData (without parameter: use already generatedData
     sales = dg.gSales.generateSalesData()
@@ -78,11 +86,8 @@ def prepareSalesData():
         articleQuantity = getSumPerArticleOfDay(df, idList)
         for key, value in articleQuantity.items():
             if preparedSales['date'][row] == date:
-                preparedSales[key][row] = value
+                preparedSales.loc[row, key] = value
         row += 1
 
     preparedSales['date'] = pd.to_datetime(preparedSales['date'])
     return preparedSales
-
-df = prepareSalesData()
-print(df)
