@@ -9,7 +9,7 @@ from datetime import date, timedelta
 import random
 
 
-def generateStockArticles(hasToBeGenerated=False):
+def generateStockArticles(hasToBeGenerated=True):
     if hasToBeGenerated:
         # get article list
         path = '../Datasets/Articles/articles.csv'
@@ -38,9 +38,13 @@ def generateStockArticles(hasToBeGenerated=False):
         # writing data frame
         for i in range(len(articles)):
 
+            #generating attributes
+            articleId = int(articles.iloc[random.randint(0, articles.shape[0]-1)]["ID"])
             productionDate = dates[random.randint(0, len(dates) - 1)]
             quantity = random.randint(0, 20)
-            stock.loc[i] = [i,productionDate.strftime("%y-%m-%d"), quantity]
+
+            #creating rows
+            stock.loc[i] = [articleId,productionDate.strftime("%y-%m-%d"), quantity]
 
         stock.to_csv('../Datasets/Stockarticles/stockarticles.csv', index_label='ID')
     else:
