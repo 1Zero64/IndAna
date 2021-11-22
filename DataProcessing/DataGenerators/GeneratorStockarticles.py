@@ -9,7 +9,7 @@ from datetime import date, timedelta
 import random
 
 
-def generateStockArticles(hasToBeGenerated=True):
+def generateStockArticles(hasToBeGenerated=False):
     if hasToBeGenerated:
         # get article list
         path = '../Datasets/Articles/articles.csv'
@@ -41,7 +41,7 @@ def generateStockArticles(hasToBeGenerated=True):
             #generating attributes
             articleId = int(articles.iloc[random.randint(0, articles.shape[0]-1)]["ID"])
             productionDate = dates[random.randint(0, len(dates) - 1)]
-            quantity = random.randint(0, 20)
+            quantity = random.randint(1, 20)
 
             #creating rows
             stock.loc[i] = [articleId,productionDate.strftime("%y-%m-%d"), quantity]
