@@ -1,6 +1,8 @@
 # Gathering data from data generators, add derived features, etc.
 import json
 
+import numpy as np
+
 import DataGenerators as dg
 import pandas as pd
 import flatten_json
@@ -20,17 +22,29 @@ def prepareWeatherData(loadingMode='old'):
 def prepareArticlesData():
     # get ArticlesData (without parameter: use already generatedData
     articles = dg.gArticles.generateArticlesData()
-    articles = articles.replace(r'^s*$', float('NaN'), regex=True)
+    articles = articles.replace(r'^s*$', np.nan, regex=True)
     return articles
 
 
 def prepareStockArticlesData():
-    # get ArticlesData (without parameter: use already generatedData
+    # get stockArticles and ArticlesData (without parameter: use already generatedData)
     stockArticles = dg.gStockarticles.generateStockArticles()
-    print(stockArticles)
     articles = prepareArticlesData()
-    print(articles)
     articles = articles.drop(columns=['Article', 'Unit'])
+    articles = articles.rename(columns={'ID':'ArticleID'})
+
+    # merge on ArticleID
+    merged = pd.merge(stockArticles, articles, left_on='ArticleID', right_on='ArticleID')
+
+    # drop nan which are articles without Best By Period
+    merged = merged.dropna()
+
+    # calculate Best By Date
+    dateformat = '%y-%m-%d'
+    merged['ProductionDate'] = pd.to_datetime(merged['ProductionDate'], format=dateformat)
+    merged['BestByDate'] = merged['ProductionDate'] + pd.to_timedelta(merged['Best By Period'], unit='d')
+    merged = merged.drop(columns=['Best By Period'])
+    return merged
 
 def prepareSalesData():
     #get SalesData (without parameter: use already generatedData
