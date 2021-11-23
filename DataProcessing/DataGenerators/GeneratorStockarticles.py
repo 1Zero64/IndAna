@@ -1,5 +1,5 @@
 # author Kevin Hilzinger
-# version 1
+# version 1.1
 # function to create stock article data
 # assumption:   production dates are within 5 days prior to 1 day prior to current date
 #               lower and upper quantity limit is same for every article
@@ -9,7 +9,7 @@ from datetime import date, timedelta
 import random
 
 
-def generateStockArticles(hasToBeGenerated=False):
+def generateStockArticles(hasToBeGenerated=True):
     if hasToBeGenerated:
         # get article list
         path = '../Datasets/Articles/articles.csv'
@@ -36,7 +36,7 @@ def generateStockArticles(hasToBeGenerated=False):
         print("creating data")
 
         # writing data frame
-        for i in range(len(articles)):
+        for i in range(40):
 
             #generating attributes
             articleId = int(articles.iloc[random.randint(0, articles.shape[0]-1)]["ID"])
@@ -46,7 +46,16 @@ def generateStockArticles(hasToBeGenerated=False):
             #creating rows
             stock.loc[i] = [articleId,productionDate.strftime("%y-%m-%d"), quantity]
 
+        print("Sorting entries")
+        # sort values by articleId -> Date
+        stock = stock.sort_values(articleId, productionDate).reset_index(drop=True)
+
+
         stock.to_csv('../Datasets/Stockarticles/stockarticles.csv', index_label='ID')
     else:
         stock = pd.read_csv('../Datasets/Stockarticles/stockarticles.csv', index_col=False)
     return stock
+
+
+if __name__ == '__main__':
+    generateStockArticles(True)
