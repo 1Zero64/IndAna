@@ -24,8 +24,8 @@ def generateStockArticles(hasToBeGenerated=True):
         # todayInit = date.today()
         # today = todayInit.strftime("%y-%m-%d")
         # possible production date options
-        # dates = pd.date_range(start=today-14, end=today-1)
-        dates = pd.date_range(date.today() - timedelta(days=5), date.today() - timedelta(days=2))
+        # dates = pd.date_range(start=sept 2020, end=okt 2021)
+        dates = pd.date_range('01/09/2020'-'01/11/2021')
         print()
         print("creating new dataframe")
 
@@ -36,7 +36,7 @@ def generateStockArticles(hasToBeGenerated=True):
         print("creating data")
 
         # writing data frame
-        for i in range(40):
+        for i in range(900):
 
             #generating attributes
             articleId = int(articles.iloc[random.randint(0, articles.shape[0]-1)]["ID"])
