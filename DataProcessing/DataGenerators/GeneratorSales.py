@@ -11,6 +11,7 @@
 import json
 import pandas as pd
 import random
+from Season.season import getSeason
 
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
 # Returns dataframe with date and soldArticles list
@@ -18,6 +19,7 @@ import random
 def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
 
     if hasToBeGenerated:
+
         # Read all articles as dataframe from articles.csv
         df = pd.read_csv("../Datasets/Articles/articles.csv")
 
@@ -38,8 +40,9 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
         for sale in range(numberOfDataToGenerate):
 
             # Creates dictionary with random date and soldArticles list key, value pairs.
+            date = dates[random.randint(0, len(dates) - 1)]
             firstLevelJSON = {
-                "date": str(dates[random.randint(0, len(dates) - 1)]),
+                "date": str(date),
                 "soldArticles": []
             }
 
@@ -54,7 +57,10 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
                 # Pick random articleID from dataframe.
                 articleId = int(df.iloc[random.randint(0, df.shape[0] - 1)]["ID"])
                 # Create a random quantity for that article.
-                soldArticles = random.randint(1, 5)
+                if articleId == 1 and getSeason(date) == "summer":
+                    soldArticles = random.randint(1, 25)
+                else:
+                    soldArticles = random.randint(1, 5)
                 # Check if article ist already used.
                 if articleId in usedArticleIds:
                     # If yes repeat the loop instance.
@@ -82,9 +88,9 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
 
         print(salesDataFrame)
 
-        # Save data in json in json document.
+        # Save data in json document.
         with open('../Datasets/Sales/sales.json', 'w') as outfile:
-            json.dump(finalJSON, outfile, indent=4)
+           json.dump(finalJSON, outfile, indent=4)
         print("Data saved in ../Datasets/Sales/sales.json.")
     else:
         salesDataFrame = pd.read_json("../Datasets/Sales/sales.json")
