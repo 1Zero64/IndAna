@@ -32,7 +32,7 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
 
         # Generates a list of dateTime. Converts them then into dates.
         # Starts a 01. January 2020 and ends at 31. Oktober 2021
-        dates = pd.date_range(start="2020-01-01", end="2021-10-31").date
+        dates = pd.date_range(start="2020-01-01", end="2021-09-30").date
 
         print("Generating data and adding it to the dataframe...")
 
