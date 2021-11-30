@@ -25,7 +25,7 @@ def generateStockArticles(hasToBeGenerated=True):
         # today = todayInit.strftime("%y-%m-%d")
         # possible production date options
         # dates = pd.date_range(start=sept 2020, end=okt 2021)
-        dates = pd.date_range(start="2020-01-01", end="2021-09-30")
+        dates = pd.date_range(start="2020-01-01", end="2021-09-30").date
         print()
         print("creating new dataframe")
 
@@ -44,7 +44,7 @@ def generateStockArticles(hasToBeGenerated=True):
             quantity = random.randint(1, 20)
 
             #creating rows
-            stock.loc[i] = [articleId,productionDate.strftime("%y-%m-%d"), quantity]
+            stock.loc[i] = [articleId,productionDate, quantity]
 
         print("Sorting entries")
         # sort values by articleId -> Date
@@ -55,7 +55,3 @@ def generateStockArticles(hasToBeGenerated=True):
     else:
         stock = pd.read_csv('../Datasets/Stockarticles/stockarticles.csv', index_col=False)
     return stock
-
-
-if __name__ == '__main__':
-    generateStockArticles(True)
