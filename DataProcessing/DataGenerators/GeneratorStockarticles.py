@@ -8,6 +8,8 @@ import pandas as pd
 from datetime import date, timedelta
 import random
 
+from DataProcessing.DataGenerators.Configuration.Season import getSeason
+
 
 def generateStockArticles(hasToBeGenerated=True):
     if hasToBeGenerated:
@@ -41,6 +43,8 @@ def generateStockArticles(hasToBeGenerated=True):
             #generating attributes
             articleId = int(articles.iloc[random.randint(0, articles.shape[0]-1)]["ID"])
             productionDate = dates[random.randint(0, len(dates) - 1)]
+            # execute seasonality determination
+            seasonweight = getSeason(date.today(), articleId, False)
             quantity = random.randint(1, 20)
 
             #creating rows
