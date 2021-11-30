@@ -7,7 +7,7 @@ import DataGenerators as dg
 import pandas as pd
 import flatten_json
 
-def prepareWeatherData(loadingMode='old'):
+def prepareWeatherData():
     # columnnames:   date, tavg (average temperature), tmin (min. temp.), tmax (max. temp.),
     #               prcp (overall precipitation/Gesamtniederschlag), snow, wdir (wind direction),
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck),
@@ -27,8 +27,8 @@ def prepareArticlesData():
 
 
 def prepareStockArticlesData():
-    # get stockArticles and ArticlesData (without parameter: use already generatedData)
-    stockArticles = dg.gStockarticles.generateStockArticles()
+    # get stockArticles and ArticlesData (without parameter: use already generatedData, else True)
+    stockArticles = dg.gStockarticles.generateStockArticles(True)
     articles = prepareArticlesData()
     articles = articles.drop(columns=['Article', 'Unit'])
     articles = articles.rename(columns={'ID':'ArticleID'})
