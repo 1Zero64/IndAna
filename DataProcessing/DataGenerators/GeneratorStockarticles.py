@@ -1,12 +1,14 @@
 # author Kevin Hilzinger
-# version 1.1
+# version 1.2
 # function to create stock article data
-# assumption:   production dates are within 5 days prior to 1 day prior to current date
-#               lower and upper quantity limit is same for every article
+# generated production dates between Jan 2020 and Sept 2021
+# outcome article volume influenced by seasonality as introduced in def getseason
 
 import pandas as pd
 from datetime import date, timedelta
 import random
+import matplotlib
+from matplotlib import pyplot as plt
 
 from DataProcessing.DataGenerators.Configuration.Season import getSeason
 
@@ -44,8 +46,10 @@ def generateStockArticles(hasToBeGenerated=True):
             articleId = int(articles.iloc[random.randint(0, articles.shape[0]-1)]["ID"])
             productionDate = dates[random.randint(0, len(dates) - 1)]
             # execute seasonality determination
-            seasonweight = getSeason(date.today(), articleId, False)
-            quantity = random.randint(1, 20)
+
+            randomQuantity = random.randint(1, 20)
+            seasonweight = getSeason(date.today(), articleId)
+            quantity = int(randomQuantity + randomQuantity * seasonweight)
 
             #creating rows
             stock.loc[i] = [articleId,productionDate, quantity]
@@ -53,7 +57,8 @@ def generateStockArticles(hasToBeGenerated=True):
         print("Sorting entries")
         # sort values by articleId -> Date
         stock = stock.sort_values(["productionDate", "articleID"]).reset_index(drop=True)
-
+        stock.plot('productionDate', y='Quantity')
+        plt.show()
 
         stock.to_csv('../Datasets/Stockarticles/stockarticles.csv', index_label='ID')
     else:

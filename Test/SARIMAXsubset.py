@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
+from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 
@@ -28,16 +29,16 @@ for x in range(len(articles)):
     df_article[x].drop(columns='articleID', inplace=True)
     df_article[x].groupby('productionDate')['Quantity'].sum()
 
-    from statsmodels.tsa.seasonal import seasonal_decompose
+    #decomposing sarimax structure
     pd.DataFrame(df_article[x], columns=['productionDate'])
     decompose_data = seasonal_decompose(df_article[x], model="additive", period=10)
     #print(decompose_data)
-    #decompose_data.plot()
-    #plt.show()
+    decompose_data.plot()
+    plt.show()
 
     seasonality = decompose_data.seasonal
     seasonality.plot(color='green')
-    plt.show()
+    #plt.show()
 
 #fig, ax = plt.subplots(figsize=(8,6))
 #ax = pivot0.plot(secondary_y=['0', '1', '2'])

@@ -6,7 +6,7 @@ import datetime as dt
 def to_integer(dt_time):
     return 10000*dt_time.year + 100*dt_time.month + dt_time.day
 
-data = pd.read_json("../../DataProcessing/Datasets/Sales/salestest.json")
+data = pd.read_json("../../DataProcessing/Datasets/Sales/salestest2.json")
 
 dictionary = {}
 

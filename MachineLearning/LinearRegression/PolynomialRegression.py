@@ -10,7 +10,7 @@ from sklearn.model_selection import cross_val_score
 def to_integer(dt_time):
     return 10000*dt_time.year + 100*dt_time.month + dt_time.day
 
-data = pd.read_json("../../DataProcessing/Datasets/Sales/salestest.json")
+data = pd.read_json("../../DataProcessing/Datasets/Sales/salestest2.json")
 
 dictionary = {}
 
@@ -33,7 +33,7 @@ X = np.arange(dataFrame['date'].size)
 #X = dataFrame["date"].values
 Y = dataFrame["quantity"].values
 
-degree = 12
+degree = 1
 fit = np.polyfit(X, Y, deg=degree)
 fit_function = np.poly1d(fit)
 
