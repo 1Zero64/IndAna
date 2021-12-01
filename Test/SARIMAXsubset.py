@@ -9,7 +9,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 
-data = pd.read_csv("C:/Users/Sell-IT/PycharmProjects/IndAna/DataProcessing/Datasets/Stockarticles/stockarticles.csv")
+data = pd.read_csv("C:/Users/Sell-IT/PycharmProjects/IndAna/DataProcessing/Datasets/Stockarticles/stockarticlestest.csv")
 articles = pd.read_csv("C:/Users/Sell-IT/PycharmProjects/IndAna/DataProcessing/Datasets/Articles/articles.csv")
 data.head()
 
@@ -25,19 +25,21 @@ print(data.head(30))
 
 df_article = {}
 for x in range(len(articles)):
-    df_article[x] = data.loc[data['articleID'] == x]
+    df_article[x] = data.loc[data['articleID'] == x+1]
     df_article[x].drop(columns='articleID', inplace=True)
     df_article[x].groupby('productionDate')['Quantity'].sum()
+    print("help")
+    print(df_article[x])
 
     #decomposing sarimax structure
-    pd.DataFrame(df_article[x], columns=['productionDate'])
-    decompose_data = seasonal_decompose(df_article[x], model="additive", period=10)
+    #pd.DataFrame(df_article[x], columns=['productionDate'])
+    #decompose_data = seasonal_decompose(df_article[x], model="additive", period=10)
     #print(decompose_data)
-    decompose_data.plot()
-    plt.show()
+    #decompose_data.plot()
+    #plt.show()
 
-    seasonality = decompose_data.seasonal
-    seasonality.plot(color='green')
+    #seasonality = decompose_data.seasonal
+    #seasonality.plot(color='green')
     #plt.show()
 
 #fig, ax = plt.subplots(figsize=(8,6))
