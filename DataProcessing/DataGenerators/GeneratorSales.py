@@ -11,7 +11,7 @@
 import json
 import pandas as pd
 import random
-from Season.season import getSeason
+#from Season.season import getSeason
 
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
 # Returns dataframe with date and soldArticles list
@@ -57,10 +57,7 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
                 # Pick random articleID from dataframe.
                 articleId = int(df.iloc[random.randint(0, df.shape[0] - 1)]["ID"])
                 # Create a random quantity for that article.
-                if articleId == 1 and getSeason(date) == "summer":
-                    soldArticles = random.randint(1, 25)
-                else:
-                    soldArticles = random.randint(1, 5)
+                soldArticles = random.randint(1, 5)
                 # Check if article ist already used.
                 if articleId in usedArticleIds:
                     # If yes repeat the loop instance.
