@@ -11,7 +11,7 @@
 import json
 import pandas as pd
 import random
-#from Season.season import getSeason
+from Configuration.Season import getSeason
 
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
 # Returns dataframe with date and soldArticles list
@@ -57,7 +57,9 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
                 # Pick random articleID from dataframe.
                 articleId = int(df.iloc[random.randint(0, df.shape[0] - 1)]["ID"])
                 # Create a random quantity for that article.
-                soldArticles = random.randint(1, 5)
+                soldArticles = random.randint(5, 7)
+                seasonWeight = getSeason(date, articleId)
+                soldArticles = int(soldArticles + soldArticles * seasonWeight)
                 # Check if article ist already used.
                 if articleId in usedArticleIds:
                     # If yes repeat the loop instance.
@@ -86,10 +88,13 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
         print(salesDataFrame)
 
         # Save data in json document.
-        with open('../Datasets/Sales/sales.json', 'w') as outfile:
+        with open('../Datasets/Sales/salestest2.json', 'w') as outfile:
            json.dump(finalJSON, outfile, indent=4)
-        print("Data saved in ../Datasets/Sales/sales.json.")
+        print("Data saved in ../Datasets/Sales/salestest.json.")
     else:
         salesDataFrame = pd.read_json("../Datasets/Sales/sales.json")
 
     return salesDataFrame
+
+if __name__ == '__main__':
+    generateSalesData(True)

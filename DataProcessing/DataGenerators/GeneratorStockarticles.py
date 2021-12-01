@@ -10,10 +10,12 @@ import random
 import matplotlib
 from matplotlib import pyplot as plt
 
-from DataProcessing.DataGenerators.Configuration.Season import getSeason
+from Configuration.Season import getSeason
 
 
 def generateStockArticles(hasToBeGenerated=True):
+    random.seed(42)
+
     if hasToBeGenerated:
         # get article list
         path = '../Datasets/Articles/articles.csv'
@@ -60,7 +62,10 @@ def generateStockArticles(hasToBeGenerated=True):
         stock.plot('productionDate', y='Quantity')
         plt.show()
 
-        stock.to_csv('../Datasets/Stockarticles/stockarticles.csv', index_label='ID')
+        stock.to_csv('../Datasets/Stockarticles/stockarticlestest.csv', index_label='ID')
     else:
         stock = pd.read_csv('../Datasets/Stockarticles/stockarticles.csv', index_col=False)
     return stock
+
+if __name__ == '__main__':
+    generateStockArticles(True)
