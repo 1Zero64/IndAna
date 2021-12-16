@@ -31,7 +31,7 @@ def generateStockArticles(hasToBeGenerated=True):
         # today = todayInit.strftime("%y-%m-%d")
         # possible production date options
         # dates = pd.date_range(start=sept 2020, end=okt 2021)
-        dates = pd.date_range(start="2020-01-01", end="2021-09-30").date
+        dates = pd.date_range(start="2016-01-01", end="2021-09-30").date
         print()
         print("creating new dataframe")
 
@@ -42,15 +42,15 @@ def generateStockArticles(hasToBeGenerated=True):
         print("creating data")
 
         # writing data frame
-        for i in range(900):
+        for i in range(1000):
 
             #generating attributes
             articleId = int(articles.iloc[random.randint(0, articles.shape[0]-1)]["ID"])
             productionDate = dates[random.randint(0, len(dates) - 1)]
             # execute seasonality determination
 
-            randomQuantity = random.randint(1, 20)
-            seasonweight = getSeason(date.today(), articleId)
+            randomQuantity = random.randint(5, 20)
+            seasonweight = getSeason(productionDate, articleId)
             quantity = int(randomQuantity + randomQuantity * seasonweight)
 
             #creating rows
