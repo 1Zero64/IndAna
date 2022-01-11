@@ -5,13 +5,10 @@
 # outcome article volume influenced by seasonality as introduced in def getseason
 
 import pandas as pd
-from datetime import date, timedelta
 import random
-import matplotlib
 from matplotlib import pyplot as plt
 
-from Configuration.Season import getSeason
-
+# from Configuration.Season import getSeason
 
 def generateStockArticles(hasToBeGenerated=True):
     random.seed(42)
@@ -68,4 +65,4 @@ def generateStockArticles(hasToBeGenerated=True):
     return stock
 
 if __name__ == '__main__':
-    generateStockArticles(True)
+    generateStockArticles(False)

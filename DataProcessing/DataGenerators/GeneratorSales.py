@@ -10,7 +10,8 @@
 import json
 import pandas as pd
 import random
-from Configuration.Season import getSeason
+
+# from Configuration.Season import getSeason
 
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
 # Returns dataframe with date and soldArticles list

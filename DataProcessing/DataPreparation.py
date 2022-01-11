@@ -31,7 +31,7 @@ def prepareArticlesData():
 
 def prepareStockArticlesData():
     # get stockArticles and ArticlesData (without parameter: use already generatedData, else True)
-    stockArticles = dg.gStockarticles.generateStockArticles(True)
+    stockArticles = dg.gStockarticles.generateStockArticles(False)
     articles = prepareArticlesData()
     #drop and rename columns
     articles = articles.drop(columns=['Article', 'Unit'])
@@ -52,7 +52,7 @@ def prepareStockArticlesData():
 
 def prepareSalesData():
     #get SalesData (without parameter: use already generatedData
-    sales = dg.gSales.generateSalesData()
+    sales = dg.gSales.generateSalesData(False)
 
     #Get unique dates of sales dataframe
     dates = pd.unique(sales['date'])
