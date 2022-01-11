@@ -14,7 +14,9 @@ def prepareWeatherData():
     #               tsun (time of sunshine)
 
     weather = dg.gWeather.generateWeatherData()
+    # convert string date to datetime
     weather['date'] = pd.to_datetime(weather['date'])
+    # drop all columns except date, tavg, tmin and tmax
     weather = weather.drop(columns=['prcp', 'snow', 'wdir', 'wspd', 'wpgt', 'pres', 'tsun'])
     return weather
 
@@ -22,6 +24,7 @@ def prepareWeatherData():
 def prepareArticlesData():
     # get ArticlesData (without parameter: use already generatedData
     articles = dg.gArticles.generateArticlesData()
+    # replace  empty/blank spaced data with NaN
     articles = articles.replace(r'^s*$', np.nan, regex=True)
     return articles
 
@@ -30,13 +33,14 @@ def prepareStockArticlesData():
     # get stockArticles and ArticlesData (without parameter: use already generatedData, else True)
     stockArticles = dg.gStockarticles.generateStockArticles(True)
     articles = prepareArticlesData()
+    #drop and rename columns
     articles = articles.drop(columns=['Article', 'Unit'])
     articles = articles.rename(columns={'ID':'ArticleID'})
 
     # merge on ArticleID
     merged = pd.merge(stockArticles, articles, left_on='ArticleID', right_on='ArticleID')
 
-    # drop nan which are articles without Best By Period
+    # drop nan a.k.a articles without Best By Period
     merged = merged.dropna()
 
     # calculate Best By Date
