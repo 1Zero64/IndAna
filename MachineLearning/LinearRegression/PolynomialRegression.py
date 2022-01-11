@@ -1,18 +1,13 @@
 import numpy as np
 import pandas as pd
-import datetime as dt
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.model_selection import cross_val_score
+from sklearn import metrics
 
-def to_integer(dt_time):
-    return 10000*dt_time.year + 100*dt_time.month + dt_time.day
-
-data = pd.read_json("../../DataProcessing/Datasets/Sales/salestest2.json")
+data = pd.read_json("../../DataProcessing/Datasets/Sales/sales.json")
+articleDF = pd.read_csv("../../DataProcessing/Datasets/Articles/articles.csv")
 
 dictionary = {}
+degree = 5
 
 for i in range(data.shape[0]):
     #date = to_integer(pd.Timestamp(data.iloc[i][0]).date())
@@ -30,18 +25,22 @@ dataFrame = pd.DataFrame(data_list, columns=columns)
 dataFrame["date"] = dataFrame["date"].dt.date
 
 X = np.arange(dataFrame['date'].size)
-#X = dataFrame["date"].values
 Y = dataFrame["quantity"].values
 
-degree = 1
 fit = np.polyfit(X, Y, deg=degree)
 fit_function = np.poly1d(fit)
+prediction = fit_function(X)
 
-plt.scatter(dataFrame["date"], Y, s=5, label="Verkaufsmenge am Tag")
-plt.plot(dataFrame["date"], fit_function(X), color='red', label='Trend')
-plt.title("Verkaufsverlauf für das Produkt Apfel mit Grad {}".format(degree))
-plt.xlabel("Datum")
-plt.ylabel("Verkaufsmenge")
+mse = metrics.mean_squared_error(Y, prediction)
+mae = metrics.mean_absolute_error(Y, prediction)
+rmse = (np.sqrt(mse))
+r2_sq = metrics.r2_score(Y, prediction)
+
+plt.scatter(dataFrame["date"], Y, s=5, label="Sold quantity in a day")
+plt.plot(dataFrame["date"], prediction, color='red', label='Trend')
+plt.title("Sales history for the product {} with grade {}\nMSE: {}    MAE: {}\nRMSE: {}    R-Squared: {}".format(articleDF.iloc[0]["Article"], degree, round(mse, 3), round(mae, 3), round(rmse, 3), round(r2_sq, 5)))
+plt.xlabel("Date")
+plt.ylabel("Sold quantity")
 plt.legend(loc="best")
 
 plt.show()

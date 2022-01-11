@@ -6,7 +6,6 @@
 # Updates:
 # Updated start and end date as discussed in meeting
 # Function returns a dataframe now with date and soldArticles
-# Improved performance
 
 import json
 import pandas as pd
@@ -57,7 +56,7 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
                 # Pick random articleID from dataframe.
                 articleId = int(df.iloc[random.randint(0, df.shape[0] - 1)]["ID"])
                 # Create a random quantity for that article.
-                soldArticles = random.randint(5, 7)
+                soldArticles = random.randint(5, 8)
                 seasonWeight = getSeason(date, articleId)
                 soldArticles = int(soldArticles + soldArticles * seasonWeight)
                 # Check if article ist already used.
@@ -85,12 +84,10 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
         finalJSON.sort(key=lambda date: date["date"])
         salesDataFrame = salesDataFrame.sort_values("date").reset_index(drop=True)
 
-        print(salesDataFrame)
-
         # Save data in json document.
         with open('../Datasets/Sales/salestest2.json', 'w') as outfile:
            json.dump(finalJSON, outfile, indent=4)
-        print("Data saved in ../Datasets/Sales/salestest.json.")
+        print("Data saved in ../Datasets/Sales/salestest3.json.")
     else:
         salesDataFrame = pd.read_json("../Datasets/Sales/sales.json")
 
