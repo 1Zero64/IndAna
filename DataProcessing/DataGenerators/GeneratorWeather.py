@@ -5,6 +5,6 @@ def generateWeatherData():
     #               prcp (overall precipitation/Gesamtniederschlag), snow, wdir (wind direction),
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck), 
     #               tsun (time of sunshine)
-    path = '../Datasets/Weather/weather_012019-102021.csv'
+    path = '../Datasets/Weather/weather_012016-102021.csv'
     data = pd.read_csv(path, header=[0])
     return data
