@@ -16,7 +16,14 @@ def generateArticlesData(hasToBeGenerated=False):
         articles = [
             ('Apple', 14, 'kg'),
             ('Milk', 7, 'l'),
-            ('Toilet Paper', '', 'pcs')
+            ('Toilet Paper', '', 'pcs'),
+            ('Salmon', 3, 'kg'),
+            ('T-Bone Steak', 6, 'kg'),
+            ('Ginger Bread', 21, 'pcs'),
+            ('Berliner', 3, 'pcs'),
+            ('Egg', 28, 'pcs'),
+            ('Watermelon', 21, 'kg' ),
+            ('Soup vegetables', 7, 'kg')
         ]
 
         articlesDataFrame = pd.DataFrame(columns=columns, data=articles)
