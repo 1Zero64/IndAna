@@ -9,7 +9,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 
-data = pd.read_json("C:/Users/Sell-IT/PycharmProjects/IndAna/DataProcessing/Datasets/Sales/salestest2.json")
+data = pd.read_json("C:/Users/Sell-IT/PycharmProjects/IndAna/DataProcessing/Datasets/Sales/sales.json")
 articles = pd.read_csv("C:/Users/Sell-IT/PycharmProjects/IndAna/DataProcessing/Datasets/Articles/articles.csv")
 data.head()
 
