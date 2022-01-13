@@ -20,7 +20,7 @@ def generateArticlesData(hasToBeGenerated=False):
             ('Salmon', 3, 'kg'),
             ('T-Bone Steak', 6, 'kg'),
             ('Ginger Bread', 21, 'pcs'),
-            ('Berliner', 3, 'pcs'),
+            ('Berliner (Doughnut)', 3, 'pcs'),
             ('Egg', 28, 'pcs'),
             ('Watermelon', 21, 'kg' ),
             ('Soup vegetables', 7, 'kg')
