@@ -7,14 +7,16 @@ import DataGenerators as dg
 import pandas as pd
 import flatten_json
 
-def prepareWeatherData(loadingMode='old'):
+def prepareWeatherData():
     # columnnames:   date, tavg (average temperature), tmin (min. temp.), tmax (max. temp.),
     #               prcp (overall precipitation/Gesamtniederschlag), snow, wdir (wind direction),
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck),
     #               tsun (time of sunshine)
 
     weather = dg.gWeather.generateWeatherData()
+    # convert string date to datetime
     weather['date'] = pd.to_datetime(weather['date'])
+    # drop all columns except date, tavg, tmin and tmax
     weather = weather.drop(columns=['prcp', 'snow', 'wdir', 'wspd', 'wpgt', 'pres', 'tsun'])
     return weather
 
@@ -22,21 +24,23 @@ def prepareWeatherData(loadingMode='old'):
 def prepareArticlesData():
     # get ArticlesData (without parameter: use already generatedData
     articles = dg.gArticles.generateArticlesData()
+    # replace  empty/blank spaced data with NaN
     articles = articles.replace(r'^s*$', np.nan, regex=True)
     return articles
 
 
 def prepareStockArticlesData():
-    # get stockArticles and ArticlesData (without parameter: use already generatedData)
-    stockArticles = dg.gStockarticles.generateStockArticles()
+    # get stockArticles and ArticlesData (without parameter: use already generatedData, else True)
+    stockArticles = dg.gStockarticles.generateStockArticles(False)
     articles = prepareArticlesData()
+    #drop and rename columns
     articles = articles.drop(columns=['Article', 'Unit'])
     articles = articles.rename(columns={'ID':'ArticleID'})
 
     # merge on ArticleID
     merged = pd.merge(stockArticles, articles, left_on='ArticleID', right_on='ArticleID')
 
-    # drop nan which are articles without Best By Period
+    # drop nan a.k.a articles without Best By Period
     merged = merged.dropna()
 
     # calculate Best By Date
@@ -48,7 +52,7 @@ def prepareStockArticlesData():
 
 def prepareSalesData():
     #get SalesData (without parameter: use already generatedData
-    sales = dg.gSales.generateSalesData()
+    sales = dg.gSales.generateSalesData(False)
 
     #Get unique dates of sales dataframe
     dates = pd.unique(sales['date'])
