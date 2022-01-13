@@ -54,8 +54,6 @@ for key, val in dftest[4].items():
 
 df_article[0].index = pd.DatetimeIndex(df_article[0].index)
 
-#ARIMA Model
-#model = ARIMA(df_article[0], order=(1, 1, 1))
 #SARIMAX Model
 model=sm.tsa.statespace.SARIMAX(df_article[0],order=(1,1,1),seasonal_order=(1,1,1,12))
 history = model.fit()
@@ -65,6 +63,7 @@ print(history.summary())
 df_article[0]['Forecast'] = model.predict(start=90,end=103,dynamic=True)  #start/end index der time serie? Müsste
 df_article[0][['Quantity','Forecast']].plot(figsize=(12,8))
 
+print("plot is being created.")
 fig, ax = plt.subplots(figsize=(8,6))
 #ax = pivot0.plot(secondary_y=['0', '1', '2'])
 #data.groupby(data['articleID']).plot()

@@ -55,9 +55,8 @@ for key, val in dftest[4].items():
 df_article[0].index = pd.DatetimeIndex(df_article[0].index)
 
 #ARIMA Model
-#model = ARIMA(df_article[0], order=(1, 1, 1))
-#SARIMAX Model
-model=sm.tsa.statespace.SARIMAX(df_article[0],order=(1,1,1),seasonal_order=(1,1,1,12))
+model = ARIMA(df_article[0], order=(1, 1, 1, 12))
+
 history = model.fit()
 print(history.summary())
 
