@@ -1,4 +1,4 @@
-from DataGenerators import GeneratorArticles as gArticles
-from DataGenerators import GeneratorSales as gSales
-from DataGenerators import GeneratorStockarticles as gStockarticles
-from DataGenerators import GeneratorWeather as gWeather
+from DataProcessing.DataGenerators import GeneratorArticles as gArticles
+from DataProcessing.DataGenerators import GeneratorSales as gSales
+from DataProcessing.DataGenerators import GeneratorStockarticles as gStockarticles
+from DataProcessing.DataGenerators import GeneratorWeather as gWeather

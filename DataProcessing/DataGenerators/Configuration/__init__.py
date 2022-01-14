@@ -1,1 +1,1 @@
-from Configuration import Season
+from DataProcessing.DataGenerators.Configuration import Season as seas
