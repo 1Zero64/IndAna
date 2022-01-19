@@ -5,7 +5,7 @@ import pandas as pd
 # import sys
 # print (sys.path)
 
-import DataPreparation as dp
+import DataProcessing.DataPreparation as dp
 
 def mergeData():
     ## 1st: Merging weather and sales on date

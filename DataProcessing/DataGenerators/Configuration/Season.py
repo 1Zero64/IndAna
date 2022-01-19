@@ -1,9 +1,8 @@
-from datetime import date, datetime
 # articleSeasonality: specific 12 month interval season for each product
 # (respectively each categorie in future versions)
 # articleweight: allocation of article-specific impact of season-factor for each article
 
-def getSeason(date, articleId, isSales=False):
+def getSeason(date, articleId):
     return ((articleSeasonality[articleId][date.month-1]-1) * articleWeight[articleId])
 #   random Wert 50
 #   50 + (50*(1 - AR.py.5 - SARIMA-1 - AR.py))*0.9 --> 50 + 50 * 0.5 - SARIMA * 0.9
@@ -15,11 +14,11 @@ articleSeasonality = {
         2:   [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], # Klopapier
         3:   [1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4], # Milch
         4:   [1.0, 1.0, 1.0, 1.5, 1.2, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4], # Salmon
-        5:   [1.0, 1.0, 1.0, 0.4, 0.8, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.6], # T-Bone steak
-        6:   [1.7, 0.8, 0.3, 0.1, 0.0, 0.0, 0.1, 0.2, 0.6, 1.0, 1.8, 3.0], # Ginger Bread
-        7:   [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.8, 0.7, 0.9, 1.1, 1.2, 1.4], # Berliner (Doughnut)
+        5:   [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.6], # T-Bone steak
+        6:   [1.7, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.8, 3.0], # Ginger Bread
+        7:   [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.1, 1.2, 1.4], # Berliner (Doughnut)
         8:   [1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4], # Egg
-        9:   [0.8, 0.9, 1.0, 1.1, 1.3, 1.5, 1.7, 1.9, 1.7, 1.3, 1.0, 0.8], # Watermelon
+        9:   [1.0, 1.0, 1.0, 1.1, 1.3, 1.5, 1.7, 1.9, 1.7, 1.3, 1.0, 1.0], # Watermelon
         10:   [1.2, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.1, 1.2, 1.3, 1.4], # Soup vegetables
 }
 

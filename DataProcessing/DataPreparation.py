@@ -142,6 +142,11 @@ def prepareSalesData():
     preparedSales['date'] = pd.to_datetime(preparedSales['date'])
 
     print("Finished")
+
+    sales.info()
+
     return preparedSales
 
-# prepareSalesData()
+
+
+prepareSalesData()

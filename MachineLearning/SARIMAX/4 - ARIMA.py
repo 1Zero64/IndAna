@@ -1,6 +1,3 @@
-from unittest.mock import inplace
-
-import inline as inline
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -44,11 +41,11 @@ print(df_article[1].dtypes)
 
 #check if data is stationary based on ADFuller Test (P-Value<0.05 -> stationary, else non-stationary
 dftest = adfuller(df_article[0], autolag = 'AIC')
-print("1. ADF : ", dftest[0])
+print("1 - AR.py. ADF : ", dftest[0])
 print("2. P-Value : ", dftest[1])
-print("3. Num Of Lags : ", dftest[2])
+print("3 - ARMA.py. Num Of Lags : ", dftest[2])
 print("4. Num Of Observations Used For ADF Regression and Critical Values Calculation :", dftest[3])
-print("5. Critical Values :")
+print("5 - SARIMA. Critical Values :")
 for key, val in dftest[4].items():
     print("\t",key, ": ", val)
 
@@ -65,7 +62,7 @@ df_article[0]['Forecast'] = model.predict(start=90,end=103,dynamic=True)  #start
 df_article[0][['Quantity','Forecast']].plot(figsize=(12,8))
 
 fig, ax = plt.subplots(figsize=(8,6))
-#ax = pivot0.plot(secondary_y=['0', '1', '2'])
+#ax = pivot0.plot(secondary_y=['0', '1 - AR.py', '2'])
 #data.groupby(data['articleID']).plot()
 #print(data.groupby(data['articleID']).head())
 #data.groupby(data['articleID']).plot(x='productionDate', y='Quantity')

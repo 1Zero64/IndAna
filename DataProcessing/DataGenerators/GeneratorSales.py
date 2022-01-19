@@ -13,10 +13,10 @@ import random
 
 import DataProcessing.DataGenerators.Configuration.Season as seas
 
-# Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
+# Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 40000
 # Returns dataframe with date and soldArticles list
 
-def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=15000):
+def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=40000):
 
     if hasToBeGenerated:
 
@@ -31,7 +31,7 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=15000):
         salesDataFrame = pd.DataFrame(columns=columns)
 
         # Generates a list of dateTime. Converts them then into dates.
-        # Starts a 01. January 2020 and ends at 31. Oktober 2021
+        # Starts a 01. January 2016 and ends at 31. Oktober 2021
         dates = pd.date_range(start="2016-01-01", end="2021-09-30").date
 
         print("Generating data and adding it to the dataframe...")
