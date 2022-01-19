@@ -11,7 +11,7 @@ import json
 import pandas as pd
 import random
 
-# from Configuration.Season import getSeason
+import DataProcessing.DataGenerators.Configuration.Season as seas
 
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
 # Returns dataframe with date and soldArticles list
@@ -58,7 +58,7 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
                 articleId = int(df.iloc[random.randint(0, df.shape[0] - 1)]["ID"])
                 # Create a random quantity for that article.
                 soldArticles = random.randint(5, 8)
-                seasonWeight = getSeason(date, articleId)
+                seasonWeight = seas.getSeason(date, articleId)
                 soldArticles = int(soldArticles + soldArticles * seasonWeight)
                 # Check if article ist already used.
                 if articleId in usedArticleIds:
