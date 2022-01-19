@@ -3,9 +3,12 @@ import json
 
 import numpy as np
 
-import DataGenerators as dg
+import DataProcessing.DataGenerators as dg
 import pandas as pd
 import flatten_json
+
+import DataProcessing.DataPreparation as dp
+
 
 def prepareWeatherData():
     # columnnames:   date, tavg (average temperature), tmin (min. temp.), tmax (max. temp.),
@@ -13,46 +16,67 @@ def prepareWeatherData():
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck),
     #               tsun (time of sunshine)
 
+    print("Preparing Weather Data")
+
     weather = dg.gWeather.generateWeatherData()
     # convert string date to datetime
     weather['date'] = pd.to_datetime(weather['date'])
     # drop all columns except date, tavg, tmin and tmax
     weather = weather.drop(columns=['prcp', 'snow', 'wdir', 'wspd', 'wpgt', 'pres', 'tsun'])
+
+    print("Finished")
     return weather
 
 
 def prepareArticlesData():
+    print("Preparing Articles Data")
     # get ArticlesData (without parameter: use already generatedData
     articles = dg.gArticles.generateArticlesData()
     # replace  empty/blank spaced data with NaN
     articles = articles.replace(r'^s*$', np.nan, regex=True)
+    print("Finished")
     return articles
+
+#prepareArticlesData()
 
 
 def prepareStockArticlesData():
+    print("Preparing Stockarticles Data")
     # get stockArticles and ArticlesData (without parameter: use already generatedData, else True)
     stockArticles = dg.gStockarticles.generateStockArticles(False)
     articles = prepareArticlesData()
+
+    #print(stockArticles)
+    #print(articles)
+
     #drop and rename columns
     articles = articles.drop(columns=['Article', 'Unit'])
-    articles = articles.rename(columns={'ID':'ArticleID'})
+    articles = articles.rename(columns={'ID':'articleID'})
+
+    #print(articles)
 
     # merge on ArticleID
-    merged = pd.merge(stockArticles, articles, left_on='ArticleID', right_on='ArticleID')
+    merged = pd.merge(stockArticles, articles, left_on='articleID', right_on='articleID')
 
     # drop nan a.k.a articles without Best By Period
     merged = merged.dropna()
 
     # calculate Best By Date
-    dateformat = '%y-%m-%d'
-    merged['ProductionDate'] = pd.to_datetime(merged['ProductionDate'], format=dateformat)
-    merged['BestByDate'] = merged['ProductionDate'] + pd.to_timedelta(merged['Best By Period'], unit='d')
+    merged['productionDate'] = pd.to_datetime(merged['productionDate'])
+    merged['BestByDate'] = merged['productionDate'] + pd.to_timedelta(merged['Best By Period'], unit='d')
     merged = merged.drop(columns=['Best By Period'])
+
+    print("Finished")
+
     return merged
 
+#prepareStockArticlesData()
+
 def prepareSalesData():
+    print("Preparing Sales Data")
+
     #get SalesData (without parameter: use already generatedData
-    sales = dg.gSales.generateSalesData(False)
+    sales = dg.gSales.generateSalesData()
 
     #Get unique dates of sales dataframe
     dates = pd.unique(sales['date'])
@@ -104,7 +128,7 @@ def prepareSalesData():
         articleQuantity = getSumPerArticleOfDay(df, idList)
         for key, value in articleQuantity.items():
             if preparedSales['date'][row] == date:
-                preparedSales.loc[row, key] = value
+                preparedSales.iloc[row, key] = value
         row += 1
 
     #changing article id columnnames to include "articleId_"
@@ -116,4 +140,8 @@ def prepareSalesData():
 
     #converting date string to datetime
     preparedSales['date'] = pd.to_datetime(preparedSales['date'])
+
+    print("Finished")
     return preparedSales
+
+# prepareSalesData()

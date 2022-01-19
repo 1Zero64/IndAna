@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-import DataGenerators as dg
+import DataProcessing.DataGenerators as dg
+import DataProcessing.DataPreparation as dp
 
 def exploreWeather():
     # columnnames:   date, tavg (average temperature), tmin (min. temp.), tmax (max. temp.),
@@ -12,6 +13,7 @@ def exploreWeather():
     weather = dg.gWeather.generateWeatherData()
     weather['date'] = pd.to_datetime(weather['date'])
     print(weather)
+    print(type(weather))
 
     ''' Descriptive Statistics '''
     print(weather.describe().T)
@@ -29,14 +31,14 @@ def exploreWeather():
 
     ## histograms for all features
     # fig = plt.figure()
-    # #plt.hist(weather)
+    # plt.hist(weather)
     # plt.show()
 
     ## histogram for single feature
-    # fig = plt.figure()
-    # weather['tavg'].hist()
-    # plt.xlabel('tavg')
-    # plt.show()
+    fig = plt.figure()
+    weather['prcp'].hist()
+    plt.xlabel('prcp')
+    plt.show()
 
     ## Scatterplot for two features
     # weather.plot(kind='scatter', x='tavg', y='date')
@@ -58,11 +60,31 @@ def exploreWeather():
     # plt.show()
 
     ## line plot for three temperature features, color coded
-    fig = plt.figure()
-    plt.plot(weather['date'], weather['tavg'], 'g', label='Average Temperature')
-    plt.plot(weather['date'], weather['tmin'], 'b', label='Min. Temperature')
-    plt.plot(weather['date'], weather['tmax'], 'r', label='Max. Temperature')
-    plt.legend()
+    # fig = plt.figure()
+    # plt.plot(weather['date'], weather['tavg'], 'g', label='Average Temperature')
+    # plt.plot(weather['date'], weather['tmin'], 'b', label='Min. Temperature')
+    # plt.plot(weather['date'], weather['tmax'], 'r', label='Max. Temperature')
+    # plt.legend()
+    # plt.show()
+
+# exploreWeather()
+
+def exploreSales():
+    sales = dp.prepareSalesData()
+    print(sales)
+
+    ''' Descriptive Statistics '''
+    print(sales.info())
+    salesWithoutDates = sales.drop(columns=['date'])
+    print(salesWithoutDates.describe().T)
+
+    ''' Plots/Visualization '''
+    ## scatttermatrix for all features
+    # pd.plotting.scatter_matrix(sales)
+    # plt.show()
+
+    ## Scatterplot for two features
+    sales.plot(kind='scatter', x='articleId_1', y='date')
     plt.show()
 
-exploreWeather()
+exploreSales()
