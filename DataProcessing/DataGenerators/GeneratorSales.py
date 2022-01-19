@@ -16,7 +16,7 @@ import DataProcessing.DataGenerators.Configuration.Season as seas
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 5000
 # Returns dataframe with date and soldArticles list
 
-def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
+def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=15000):
 
     if hasToBeGenerated:
 
@@ -32,7 +32,7 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
 
         # Generates a list of dateTime. Converts them then into dates.
         # Starts a 01. January 2020 and ends at 31. Oktober 2021
-        dates = pd.date_range(start="2020-01-01", end="2021-09-30").date
+        dates = pd.date_range(start="2016-01-01", end="2021-09-30").date
 
         print("Generating data and adding it to the dataframe...")
 
@@ -86,9 +86,9 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=5000):
         salesDataFrame = salesDataFrame.sort_values("date").reset_index(drop=True)
 
         # Save data in json document.
-        with open('../Datasets/Sales/salestest2.json', 'w') as outfile:
+        with open('../Datasets/Sales/sales.json', 'w') as outfile:
            json.dump(finalJSON, outfile, indent=4)
-        print("Data saved in ../Datasets/Sales/salestest3.json.")
+        print("Data saved in ../Datasets/Sales/sales.json.")
     else:
         salesDataFrame = pd.read_json("../Datasets/Sales/sales.json")
 

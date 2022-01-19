@@ -7,22 +7,28 @@ Kevin Hilzinger\
 Niko Kauz
 
 
-## Project
+# Project
 Optimale von Bestellpunkt und Bestellrhytmus
 
-### Description
+## Description
 
 
-### Input
+## Input
 
 
-### Output
+## Output
 
 
-### Used ML Models
+## Used ML Models
 WIP
 
-### Using Setuptools/Python Egg
+### Linear Regression
+
+### SARIMAX
+
+### RNN
+
+## Using Setuptools/Python Egg
 The file setup.py will look for packages (directories with __ init__.py files) and install them as modules.
 
 - Go to terminal and there to project main directory (.../IndAna)
