@@ -1,11 +1,9 @@
 # Gathering data from data generators, add derived features, etc.
-import json
 
 import numpy as np
 
 import DataProcessing.DataGenerators as dg
 import pandas as pd
-import flatten_json
 
 import DataProcessing.DataPreparation as dp
 
