@@ -17,8 +17,6 @@ def prepareWeatherData():
     print("Preparing Weather Data")
 
     weather = dg.gWeather.generateWeatherData()
-    # convert string date to datetime
-    weather['date'] = pd.to_datetime(weather['date'])
     # drop all columns except date, tavg, tmin and tmax
     weather = weather.drop(columns=['prcp', 'snow', 'wdir', 'wspd', 'wpgt', 'pres', 'tsun'])
 
@@ -42,9 +40,9 @@ def prepareStockArticlesData():
     print("Preparing Stockarticles Data")
     # get stockArticles and ArticlesData (without parameter: use already generatedData, else True)
     stockArticles = dg.gStockarticles.generateStockArticles(False)
-    articles = prepareArticlesData()
+    articles = dg.gArticles.generateArticlesData()
 
-    #print(stockArticles)
+    print(stockArticles)
     #print(articles)
 
     #drop and rename columns
@@ -55,6 +53,7 @@ def prepareStockArticlesData():
 
     # merge on ArticleID
     merged = pd.merge(stockArticles, articles, left_on='articleID', right_on='articleID')
+    merged = merged.rename(columns={'ID': 'stockarticleID'})
 
     # drop nan a.k.a articles without Best By Period
     merged = merged.dropna()
@@ -63,18 +62,23 @@ def prepareStockArticlesData():
     merged['productionDate'] = pd.to_datetime(merged['productionDate'])
     merged['BestByDate'] = merged['productionDate'] + pd.to_timedelta(merged['Best By Period'], unit='d')
     merged = merged.drop(columns=['Best By Period'])
+    merged = merged.sort_values(["articleID", "productionDate"]).reset_index(drop=True)
 
     print("Finished")
 
-    return merged
+    # workaround for sums not being treated as objects but as numeric values
+    merged.to_csv('../Datasets/Stockarticles/stockarticles_prepared.csv', index=False)
+    stock = pd.read_csv('../Datasets/Stockarticles/stockarticles_prepared.csv', parse_dates=['productionDate',
+                                                                                             'BestByDate'])
+    return stock
 
-#prepareStockArticlesData()
+# prepareStockArticlesData()
 
 def prepareSalesData():
     print("Preparing Sales Data")
 
     #get SalesData (without parameter: use already generatedData
-    sales = dg.gSales.generateSalesData()
+    sales = dg.gSales.generateSalesData(False)
 
     #Get unique dates of sales dataframe
     dates = pd.unique(sales['date'])
@@ -126,6 +130,8 @@ def prepareSalesData():
         articleQuantity = getSumPerArticleOfDay(df, idList)
         for key, value in articleQuantity.items():
             if preparedSales['date'][row] == date:
+                if pd.isna(value):
+                    value = np.nan
                 preparedSales.iloc[row, key] = value
         row += 1
 
@@ -136,15 +142,12 @@ def prepareSalesData():
 
     preparedSales.columns = columnNames
 
-    #converting date string to datetime
-    preparedSales['date'] = pd.to_datetime(preparedSales['date'])
-
     print("Finished")
 
-    sales.info()
+    # workaround for sums not being treated as objects but as numeric values
+    preparedSales.to_csv('../Datasets/Sales/sales_prepared.csv', index=False)
+    sales = pd.read_csv('../Datasets/Sales/sales_prepared.csv', parse_dates=['date'])
 
-    return preparedSales
+    return sales
 
-
-
-prepareSalesData()
+# prepareSalesData()

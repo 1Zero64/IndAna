@@ -51,11 +51,11 @@ def exploreWeather():
     # plt.show()
 
     ## Scatterplot for two features, colored by another feature
-    # weather.plot(kind='scatter', x='tavg', y='date', c='tsun', cmap='viridis')
-    # plt.xlabel('Average Temperature')
-    # plt.show()
+    weather.plot(kind='scatter', x='tavg', y='date', c='tsun', cmap='viridis')
+    plt.xlabel('Average Temperature')
+    plt.show()
 
-    ## scatttermatrix for all features
+    ## scattermatrix for all features
     # pd.plotting.scatter_matrix(weather)
     # plt.show()
 
@@ -67,7 +67,7 @@ def exploreWeather():
     # plt.legend()
     # plt.show()
 
-# exploreWeather()
+exploreWeather()
 
 def exploreSales():
     sales = dp.prepareSalesData()
@@ -79,12 +79,51 @@ def exploreSales():
     print(salesWithoutDates.describe().T)
 
     ''' Plots/Visualization '''
-    ## scatttermatrix for all features
+    ## scattermatrix for all features
     # pd.plotting.scatter_matrix(sales)
     # plt.show()
 
     ## Scatterplot for two features
-    sales.plot(kind='scatter', x='articleId_1', y='date')
+    # sales.plot(kind='scatter', x='articleId_1', y='date')
+    # plt.show()
+
+    ## histogram for single feature
+    fig = plt.figure()
+    sales['articleId_8'].hist()
+    plt.xlabel('Sales Eggs')
+    plt.ylabel('Days')
     plt.show()
 
-exploreSales()
+# exploreSales()
+
+def exploreStockArticles():
+    stockarticles = dp.prepareStockArticlesData()
+    print(stockarticles)
+
+    ''' Descriptive Statistics '''
+    print(stockarticles.info())
+    pd.set_option('display.max_columns', None)
+    print(stockarticles.describe().T)
+
+    ''' Plots/Visualization '''
+    ## scattermatrix for all features
+    # pd.plotting.scatter_matrix(stockarticles)
+    # plt.show()
+
+    ## Scatterplot for two features
+    # stockarticles.plot(kind='scatter', x='articleID', y='Quantity')
+    # plt.show()
+
+    ## Scatterplot for two features, colored by another feature
+    stockarticles2016 = stockarticles[stockarticles.productionDate <= np.datetime64('2017-01-01')]
+    print(stockarticles2016)
+    stockarticles2016.plot(kind='scatter', x='productionDate', y='Quantity', c='articleID', cmap='viridis')
+    plt.show()
+
+    ## histogram for single feature
+    # fig = plt.figure()
+    # stockarticles['articleId_6'].hist()
+    # plt.xlabel('Stock Ginger Bread')
+    # plt.show()
+
+# exploreStockArticles()
