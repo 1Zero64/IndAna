@@ -16,7 +16,7 @@ import DataProcessing.DataGenerators.Configuration.Season as seas
 # Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 40000
 # Returns dataframe with date and soldArticles list
 
-def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=40000):
+def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=10000):
 
     if hasToBeGenerated:
 
