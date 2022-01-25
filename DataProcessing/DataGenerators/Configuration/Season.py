@@ -1,6 +1,12 @@
-# articleSeasonality: specific 12 month interval season for each product
-# (respectively each categorie in future versions)
-# articleweight: allocation of article-specific impact of season-factor for each article
+# python3 Season.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Kevin Hilzinger
+# Description:
+# # articleSeasonality: specific 12 month interval season for each product
+# # (respectively each categorie in future versions)
+# # articleweight: allocation of article-specific impact of season-factor for each article
+# ===========================================================================================
 
 def getSeason(date, articleId):
     return ((articleSeasonality[articleId][date.month-1]-1) * articleWeight[articleId])

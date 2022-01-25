@@ -1,3 +1,10 @@
+# python3 DataExploration.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Ann-Kathrin Jauk
+# Description: Explores data
+# ===========================================================================================
+
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -10,10 +17,10 @@ def exploreWeather():
     #               prcp (overall precipitation/Gesamtniederschlag), snow, wdir (wind direction),
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck),
     #               tsun (time of sunshine)
+
+    # get data
     weather = dg.gWeather.generateWeatherData()
-    weather['date'] = pd.to_datetime(weather['date'])
     print(weather)
-    print(type(weather))
 
     ''' Descriptive Statistics '''
     print(weather.describe().T)
@@ -67,9 +74,10 @@ def exploreWeather():
     # plt.legend()
     # plt.show()
 
-exploreWeather()
+# exploreWeather()
 
 def exploreSales():
+    # get prepared data
     sales = dp.prepareSalesData()
     print(sales)
 
@@ -97,6 +105,7 @@ def exploreSales():
 # exploreSales()
 
 def exploreStockArticles():
+    # get prepared data
     stockarticles = dp.prepareStockArticlesData()
     print(stockarticles)
 

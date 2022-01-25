@@ -1,8 +1,12 @@
-# author Kevin Hilzinger
-# version 1.2
-# function to create stock article data
-# generated production dates between Jan 2020 and Sept 2021
-# outcome article volume influenced by seasonality as introduced in def getseason
+# python3 GeneratorStockarticles.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Kevin Hilzinger
+# Version: 1.2
+# Description:
+# # Generates stock article data, production dates between Jan 2020 and Sept 2021
+# # outcome article volume influenced by seasonality as introduced in def getseason
+# ===========================================================================================
 
 import pandas as pd
 import random
@@ -10,7 +14,14 @@ from matplotlib import pyplot as plt
 
 import DataProcessing.DataGenerators.Configuration.Season as seas
 
-def generateStockArticles(hasToBeGenerated=True):
+def generateStockArticles(hasToBeGenerated=False):
+    '''
+
+    :param hasToBeGenerated: (bool)
+            true: articles data gets freshly generated, default false: use generated .json
+    :return: stock: (pandas.dataframe)
+                dataframe with generated stockarticles
+    '''
     random.seed(42)
 
     if hasToBeGenerated:
