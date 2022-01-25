@@ -6,5 +6,5 @@ def generateWeatherData():
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck), 
     #               tsun (time of sunshine)
     path = '../Datasets/Weather/weather_012016-102021.csv'
-    data = pd.read_csv(path, header=[0])
+    data = pd.read_csv(path, header=[0], parse_dates=['date'])
     return data
