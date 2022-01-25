@@ -1,3 +1,5 @@
+# https://www.geeksforgeeks.org/how-to-calculate-moving-averages-in-python/
+
 from statsmodels.graphics.tsaplots import plot_predict
 from statsmodels.tsa.arima.model import ARIMA
 from matplotlib import pyplot as plt

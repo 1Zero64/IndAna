@@ -1,17 +1,15 @@
 from sklearn.linear_model import LinearRegression
 import pandas as pd
 import matplotlib.pyplot as plt
-import datetime as dt
 
 def to_integer(dt_time):
     return 10000*dt_time.year + 100*dt_time.month + dt_time.day
 
-data = pd.read_json("../../DataProcessing/Datasets/Sales/salestest2.json")
+data = pd.read_json("../../DataProcessing/Datasets/Sales/sales.json")
 
 dictionary = {}
 
 for i in range(data.shape[0]):
-    #date = to_integer(pd.Timestamp(data.iloc[i][0]).date())
     date = pd.Timestamp(data.iloc[i][0]).date()
     if date not in dictionary:
         dictionary[date] = 0
@@ -26,7 +24,7 @@ dataFrame = pd.DataFrame(data_list, columns=columns)
 dataFrame.date = pd.to_datetime(dataFrame.date)
 
 X = dataFrame["date"].values.reshape(-1, 1)
-Y = dataFrame["quantity"].values.reshape(-1, 1)  # -1 means that calculate the dimension of rows, but have 1 column
+Y = dataFrame["quantity"].values.reshape(-1, 1)
 
 linear_regressor = LinearRegression().fit(X,Y)  # create object for the class
 linear_regressor.fit(X, Y)
