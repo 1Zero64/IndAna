@@ -8,7 +8,7 @@ import pandas as pd
 import random
 from matplotlib import pyplot as plt
 
-# from Configuration.Season import getSeason
+import DataProcessing.DataGenerators.Configuration.Season as seas
 
 def generateStockArticles(hasToBeGenerated=True):
     random.seed(42)
@@ -47,7 +47,7 @@ def generateStockArticles(hasToBeGenerated=True):
             # execute seasonality determination
 
             randomQuantity = random.randint(5, 20)
-            seasonweight = getSeason(productionDate, articleId)
+            seasonweight = seas.getSeason(productionDate, articleId)
             quantity = int(randomQuantity + randomQuantity * seasonweight)
 
             #creating rows
@@ -59,7 +59,7 @@ def generateStockArticles(hasToBeGenerated=True):
         stock.plot('productionDate', y='Quantity')
         plt.show()
 
-        stock.to_csv('../Datasets/Stockarticles/stockarticlestest.csv', index_label='ID')
+        stock.to_csv('../Datasets/Stockarticles/stockarticles.csv', index_label='ID')
     else:
         stock = pd.read_csv('../Datasets/Stockarticles/stockarticles.csv', index_col=False)
     return stock
