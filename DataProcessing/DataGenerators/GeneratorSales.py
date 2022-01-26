@@ -1,11 +1,16 @@
-# author Niko Kauz
-# Version 1.2
-# Generates sales data and writes it into a json document.
-# This json document is located in ../Datasets/Sales/sales.json
-# Simple approach: Date instead of DateTime and supermarkets are open at all days
-# Updates:
-# Updated start and end date as discussed in meeting
-# Function returns a dataframe now with date and soldArticles
+# python3 GeneratorSales.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Niko Kauz
+# Version: 1.2
+# Description:
+# # Generates sales data and writes it into a json document.
+# # This json document is located in ../Datasets/Sales/sales.json
+# # Simple approach: Date instead of DateTime and supermarkets are open at all days
+# # Updates:
+# # Updated start and end date as discussed in meeting
+# # Function returns a dataframe now with date and soldArticles
+# ===========================================================================================
 
 import json
 import pandas as pd
@@ -13,10 +18,17 @@ import random
 
 import DataProcessing.DataGenerators.Configuration.Season as seas
 
-# Function to call. Optional parameter @numberOfDataToGenerate --> Default value is 40000
-# Returns dataframe with date and soldArticles list
-
 def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=10000):
+    '''
+    Generates articles data, saves them to csv file and returns dataframe
+
+    :param hasToBeGenerated: (bool)
+            true: articles data gets freshly generated, default false: use generated .json
+    :param numberOfDataToGenerate: (int)
+            defines number of sales to generate, default: 10000
+    :return: salesDataFrame: (pandas.dataframe)
+                dataframe with date and soldArticles list
+    '''
 
     if hasToBeGenerated:
 

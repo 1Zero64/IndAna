@@ -1,13 +1,22 @@
-import pandas as pd
-# import os
-# print (os.environ['PYTHONPATH'])
-#
-# import sys
-# print (sys.path)
+# python3 DataMerge.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Ann-Kathrin Jauk
+# Description: Merges data into one dataframe
+# ===========================================================================================
 
+import pandas as pd
 import DataProcessing.DataPreparation as dp
 
 def mergeData():
+    '''
+    Merges data into one dataframe,
+    Step 1: weather and sales,
+    Step 2: weather, sales, stockarticles
+
+    :return: merged: (pandas.dataframe)
+                merged data
+    '''
     ## 1st: Merging weather and sales on date
     weather = dp.prepareWeatherData()
     sales = dp.prepareSalesData()
@@ -17,7 +26,7 @@ def mergeData():
     print(merged)
     merged.to_csv('../Datasets/merged1.csv', index=False)
 
-    ## 2nd: Merging new df with stockarticles
+    ## 2nd: Merging new df with stockarticles on date and BestByDate
     # stockarticles = dp.prepareStockArticlesData()
     # stockarticles = stockarticles.rename(columns={'ID': 'stockarticleID'})
     # print(stockarticles)

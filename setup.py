@@ -1,3 +1,13 @@
+# python3 GeneratorWeather.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Ann-Kathrin Jauk
+# Description: Build Python Egg, module management
+# how to:
+# - Go to terminal in project directory
+# - type command "pip install -e ."
+# ===========================================================================================
+
 from setuptools import setup
 
 setup(name='IndAna',
