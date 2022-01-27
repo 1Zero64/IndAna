@@ -23,7 +23,7 @@ def mergeData():
 
     merged = pd.merge(weather, sales, left_on='date', right_on='date')
     pd.set_option('display.max_columns', None)
-    print(merged)
+    # print(merged)
     merged.to_csv('../Datasets/merged1.csv', index=False)
 
     ## 2nd: Merging new df with stockarticles on date and BestByDate

@@ -10,9 +10,11 @@ from sklearn.preprocessing import MinMaxScaler
 import keras.layers as kl
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
+from keras.layers import Dense
+from keras.utils.vis_utils import plot_model
 
 # import dataset from weather_012019-102021.csv file
-weather_df = pd.read_csv('../DataProcessing/Datasets/Weather/weather_012019-102021.csv')
+weather_df = pd.read_csv('../../DataProcessing/Datasets/Weather/weather_012019-102021.csv')
 
 # only include avg temperature column as to forecast temperature
 # drop all the rows that have no values or has a NaN
@@ -36,7 +38,7 @@ test = weather_df[~msk].iloc[:, 1:2].values
 print(type(train))
 # print(test)
 
-# Feature Scaling: normalize temperature in the range 0 to 1
+# Feature Scaling: normalize temperature in the range 0 to 1 - AR.py
 sc = MinMaxScaler(feature_range=(0,1))
 train_scaled = sc.fit_transform(train)
 
@@ -73,8 +75,9 @@ regressor.add(LSTM(units = 30))
 regressor.add(Dropout(0.2))
 regressor.add(Dense(units = n_future, activation = 'linear'))
 regressor.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['acc'])
-regressor.fit(x_train, y_train, epochs = 500, batch_size = 32 )
+regressor.fit(x_train, y_train, epochs = 50, batch_size = 32 )
 
+plot_model(regressor, to_file='rnn_plot.png', show_shapes=True, show_layer_names=True)
 
 # test RNN performance with test dataset
 test_scaled = sc.transform(test)
@@ -88,7 +91,7 @@ predicted_temperature = regressor.predict(test_scaled)
 predicted_temperature = sc.inverse_transform(predicted_temperature)
 print("predicted_temp")
 print(predicted_temperature)
-#predicted_temperature = np.reshape(predicted_temperature, (predicted_temperature.shape[1], predicted_temperature[0]))
+#predicted_temperature = np.reshape(predicted_temperature, (predicted_temperature.shape[1 - AR.py], predicted_temperature[0]))
 
 print(test)
 
