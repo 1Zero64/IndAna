@@ -1,97 +1,169 @@
-#Source: https://medium.com/analytics-vidhya/weather-forecasting-with-recurrent-neural-networks-1eaa057d70c3
-
-import numpy as np
-import matplotlib.pyplot as plt
+import DataProcessing.DataPreparation as dp
 import pandas as pd
-# Feature Scaling
-from sklearn.preprocessing import MinMaxScaler
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
 
-# RNN model for forecasting weather
-import keras.layers as kl
+from random import seed
 from keras.models import Sequential
-from keras.layers import LSTM, Dense, Dropout
-from keras.layers import Dense
-from keras.utils.vis_utils import plot_model
+from keras.layers import Dense, LSTM, Dropout
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.model_selection import train_test_split
+from datetime import timedelta
 
-# import dataset from weather_012019-102021.csv file
-weather_df = pd.read_csv('../../DataProcessing/Datasets/Weather/weather_012019-102021.csv')
+# set a global pseudo-random generator at a fixed value
+seed_value = 42
+np.random.seed(seed_value)
+seed(seed_value)
+tf.random.set_seed(seed_value)
 
-# only include avg temperature column as to forecast temperature
-# drop all the rows that have no values or has a NaN
-weather_df = weather_df.dropna(subset=["tavg"])
-weather_df = weather_df.reset_index(drop=True)
+# load prepared weather data from DataProcessing
+weather = dp.prepareWeatherData()
 
-# create training and test datasets
-x_train = []
-y_train = []
+# change number indexes to date indexes
+weather['date'] = pd.to_datetime(weather['date'])
+weather.set_index('date', inplace=True)
+weather = weather.resample('D').mean()
 
-#############################################################################
-weather_df['split'] = np.random.randn(weather_df.shape[0], 1)
-msk = np.random.rand(len(weather_df)) <= 0.8
+# use only column 'tavg'
+weather = weather[['tavg']]
 
-# [':' all rows, '0:2' columns date and tavg]
-train = weather_df[msk].iloc[:, 1:2].values
-test = weather_df[~msk].iloc[:, 1:2].values
-#############################################################################
+# change dataframe format to float for not loosing precision (float = uncountable infinity)
+df = weather.copy()
+weather = weather.values
+weather = weather.astype('float32')
 
-#print(train)
-print(type(train))
-# print(test)
+# normalize the dataset: learn the required parameters by having all values in a similar value range
+scaler = MinMaxScaler(feature_range=(-1, 1))
+sc = scaler.fit_transform(weather)
 
-# Feature Scaling: normalize temperature in the range 0 to 1 - AR.py
-sc = MinMaxScaler(feature_range=(0,1))
-train_scaled = sc.fit_transform(train)
+timestep = 30  # amount of time steps the rnn runs (memory of 30 characters)
+# declare X and Y as empty list
+X = []
+Y = []
 
-# next 4 days temperature forecast
-n_future = 4
-# past 30 days
-n_past = 30
+for i in range(len(sc) - timestep):
+    X.append(sc[i:i + timestep])
+    Y.append(sc[i + timestep])
 
-# x_train contains 30 previous temperature inputs before that day
-# y_train contains 4 days temperature outputs after that day
-for i in range(0, len(train_scaled) - n_past - n_future + 1):
-    x_train.append(train_scaled[i : i + n_past, 0])
-    y_train.append(train_scaled[i + n_past : i + n_past + n_future, 0])
+# convert X and Y into numpy array
+X = np.asanyarray(X)
+Y = np.asanyarray(Y)
 
-# converts lists (x_train, y_train) to numpy array for fitting training set to the model
-x_train, y_train = np.array(x_train), np.array(y_train)
-x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
+# split dataframe into train and test sets to verify accuracy after fitting the model
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+# X_train.shape: [batch_size, timesteps, feature]
+#
+# initializing the rnn
+model = Sequential()  # plain stack of layers where each layer has exactly one input and one output tensor
+# # 1st layer (input)
+model.add(LSTM(32, activation='relu', input_shape=(X_train.shape[1:]), return_sequences=True))
+model.add(Dropout(0.2))  # ignores a set of neurons (randomly) for preventing the net from overfitting
+# # 2rd Layer (hidden)
+model.add(LSTM(32, activation='relu', return_sequences=True))
+model.add(Dropout(0.2))
+# # 3rd Layer (hidden)
+model.add(LSTM(32, activation='sigmoid', return_sequences=False))
+model.add(Dropout(0.2))
+# # 4th Layer (output)
+model.add(Dense(1))  # allows neurons of the layer to be connected to every neuron of its preceding layer
+
+model.compile(optimizer='adam', loss='mse', metrics=['acc'])
+
+model.summary()
+history = model.fit(X_train, Y_train, epochs=250, validation_data=(X_test, Y_test))
+
+# make predictions
+preds = model.predict(X_test)
+preds = scaler.inverse_transform(preds)
+
+Y_test = np.asanyarray(Y_test)
+Y_test = Y_test.reshape(-1, 1)
+Y_test = scaler.inverse_transform(Y_test)
+
+Y_train = np.asanyarray(Y_train)
+Y_train = Y_train.reshape(-1, 1)
+Y_train = scaler.inverse_transform(Y_train)
+
+print("")
+print("Mean-Square Error: ", mean_squared_error(Y_test, preds))
+print("Mean-Absolute Error: ", mean_absolute_error(Y_test, preds))
+
+# plot model accuracy
+plt.figure(figsize=(8, 5))
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+epochs = range(1, len(loss) + 1)
+plt.plot(epochs, loss, 'g')
+plt.plot(epochs, val_loss, 'blue')
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.title("Model Loss Curve")
+plt.legend(('Training loss', 'Validation loss'))
+plt.show()
+
+# plot model results
+plt.figure(figsize=(20, 9))
+plt.plot(Y_test, 'blue', linewidth=2)
+plt.plot(preds, 'r')
+plt.legend(('Test', 'Predicted'))
+plt.title("Temperature Prediction")
+plt.grid(True)
+plt.show()
+
+# build dataframe with actual and predicted data
+test = pd.DataFrame(Y_test, columns=['Actual'])
+pred = pd.DataFrame(preds, columns=['Prediction'])
+
+results = pd.concat([test, pred], axis=1)
+results.to_csv('../../DataProcessing/Datasets/Weather/temperaturePrediction.csv')
+print("")
+print(results.head(20))
 
 
-# defines layers in the RNN
-regressor = Sequential()
+def insert_end(x_in, new_input):
+    for i in range(timestep - 1):
+        x_in[:, i, :] = x_in[:, i + 1, :]
+    x_in[:, timestep - 1, :] = new_input
+    return x_in
 
-regressor.add(kl.Bidirectional(LSTM(units = 30, return_sequences = True,
-input_shape = (x_train.shape[1], 1) ) ))
-regressor.add(Dropout(0.2))
 
-regressor.add(LSTM(units = 30, return_sequences = True))
-regressor.add(Dropout(0.2))
+# this section is for unknown future
+future = 30  # forecasting the next 30 steps
+forcast = []
+x_in = X_test[-1:, :, :]
+time = []
+for i in range(future):
+    out = model.predict(x_in, batch_size=1)
+    forcast.append(out[0, 0])
+    x_in = insert_end(x_in, out[0, 0])
+    time.append(pd.to_datetime(df.index[-1]) + timedelta(days=i + 1))
 
-regressor.add(LSTM(units = 30, return_sequences = True))
-regressor.add(Dropout(0.2))
+# make predictions
+forcasted_output = np.asanyarray(forcast)
+forcasted_output = forcasted_output.reshape(-1, 1)
+forcasted_output = scaler.inverse_transform(forcasted_output)
 
-regressor.add(LSTM(units = 30))
-regressor.add(Dropout(0.2))
-regressor.add(Dense(units = n_future, activation = 'linear'))
-regressor.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['acc'])
-regressor.fit(x_train, y_train, epochs = 50, batch_size = 32 )
+# build predicted values dataframe
+forcasted_output = pd.DataFrame(forcasted_output)
+date = pd.DataFrame(time)
+df_result = pd.concat([date, forcasted_output], axis=1)
+df_result.columns = "date", "Forecast"
 
-plot_model(regressor, to_file='rnn_plot.png', show_shapes=True, show_layer_names=True)
+df_result.to_csv('../../DataProcessing/Datasets/Weather/temperatureForecast.csv')
 
-# test RNN performance with test dataset
-test_scaled = sc.transform(test)
-test_scaled = np.array(test_scaled)
-test_scaled = np.reshape(test_scaled, (test_scaled.shape[1], test_scaled.shape[0], 1))
+# show model forecast values from dataframe
+print("")
+print(df_result)
 
-print(test_scaled)
-
-# test RNN model with test dataset
-predicted_temperature = regressor.predict(test_scaled)
-predicted_temperature = sc.inverse_transform(predicted_temperature)
-print("predicted_temp")
-print(predicted_temperature)
-#predicted_temperature = np.reshape(predicted_temperature, (predicted_temperature.shape[1 - AR.py], predicted_temperature[0]))
-
-print(test)
-
+# plot model forecast
+plt.figure(figsize=(16, 8))
+plt.title('Temperature Forecast')
+plt.xlabel('Date', fontsize=18)
+plt.ylabel('Temperature', fontsize=18)
+plt.plot(df['tavg'][2101:])
+plt.plot(df_result.set_index('date')[['Forecast']], "r--")
+plt.legend(('Actual', 'Forecast'))
+plt.grid(True)
+plt.show()
