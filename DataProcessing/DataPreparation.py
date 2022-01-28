@@ -1,4 +1,10 @@
-# Gathering data from data generators, add derived features, etc.
+# python3 DataPreparation.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Ann-Kathrin Jauk
+# Description: Reads in data from csv/json files, converts datatypes where needed (e.g.
+# with date string to datetime), drops columns/nan-values and returns pandas dataframe
+# ===========================================================================================
 
 import numpy as np
 
@@ -9,6 +15,12 @@ import DataProcessing.DataPreparation as dp
 
 
 def prepareWeatherData():
+    '''
+    Reads weather data from csv, drops unnecessary columns, returns dataframe
+
+    :return: weather: (pandas.dataframe)
+                prepared weather data
+    '''
     # columnnames:   date, tavg (average temperature), tmin (min. temp.), tmax (max. temp.),
     #               prcp (overall precipitation/Gesamtniederschlag), snow, wdir (wind direction),
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck),
@@ -25,31 +37,43 @@ def prepareWeatherData():
 
 
 def prepareArticlesData():
+    '''
+    Reads articles data from csv, replaces empty values with NaN, returns dataframe
+
+    :return: articles: (pandas.dataframe)
+                prepared articles data
+    '''
     print("Preparing Articles Data")
+
     # get ArticlesData (without parameter: use already generatedData
     articles = dg.gArticles.generateArticlesData()
-    # replace  empty/blank spaced data with NaN
+
+    # replace empty/blank spaced values with NaN
     articles = articles.replace(r'^s*$', np.nan, regex=True)
     print("Finished")
-    return articles
 
-#prepareArticlesData()
+    return articles
 
 
 def prepareStockArticlesData():
+    '''
+    Reads stockarticles data from csv, merges with articles for calculation of Best-By-Date,
+    drops articles with NaN Best-By-Period, returns dataframe
+
+    :return: stock: (pandas.dataframe)
+                prepared stockarticles data
+    '''
     print("Preparing Stockarticles Data")
     # get stockArticles and ArticlesData (without parameter: use already generatedData, else True)
     stockArticles = dg.gStockarticles.generateStockArticles(False)
     articles = dg.gArticles.generateArticlesData()
 
-    print(stockArticles)
-    #print(articles)
+    # print(stockArticles)
+    # print(articles)
 
     #drop and rename columns
     articles = articles.drop(columns=['Article', 'Unit'])
     articles = articles.rename(columns={'ID':'articleID'})
-
-    #print(articles)
 
     # merge on ArticleID
     merged = pd.merge(stockArticles, articles, left_on='articleID', right_on='articleID')
@@ -72,9 +96,14 @@ def prepareStockArticlesData():
                                                                                              'BestByDate'])
     return stock
 
-# prepareStockArticlesData()
 
 def prepareSalesData():
+    '''
+    Reads sales data from json, sums sales quantities per article per day, returns dataframe
+
+    :return: sales: (pandas.dataframe)
+                prepared sales data
+    '''
     print("Preparing Sales Data")
 
     #get SalesData (without parameter: use already generatedData
@@ -149,5 +178,3 @@ def prepareSalesData():
     sales = pd.read_csv('../Datasets/Sales/sales_prepared.csv', parse_dates=['date'])
 
     return sales
-
-# prepareSalesData()
