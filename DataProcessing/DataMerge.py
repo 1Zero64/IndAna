@@ -36,5 +36,3 @@ def mergeData():
     # print(merged)
 
     return merged
-
-mergeData()
