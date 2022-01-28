@@ -1,4 +1,11 @@
-,ID,Article,BestByPeriod,Unit
-0,0,Milk,7,l
-1,1,Toilet Paper,,pcs
-2,2,Apple,14,kg
+ID,Article,Best By Period,Unit
+1,Apple,14,kg
+2,Milk,7,l
+3,Toilet Paper,,pcs
+4,Salmon,3,kg
+5,T-Bone Steak,6,kg
+6,Ginger Bread,21,pcs
+7,Berliner (Doughnut),3,pcs
+8,Egg,28,pcs
+9,Watermelon,21,kg
+10,Soup vegetables,7,kg
