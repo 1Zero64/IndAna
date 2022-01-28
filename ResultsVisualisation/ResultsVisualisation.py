@@ -147,12 +147,9 @@ def RNNVisualisation(articleId):
 
 if __name__ == '__main__':
 
-    for i in range(10):
+    # Change for different articles
+    wishedArticleId = 1
 
-        polynomialRegression3dVisualisation(1)
-
-        # wishedArticleId = i +1
-        #
-        # linearRegressionVisualisation(wishedArticleId)
-        # polynomialRegressionVisualisation(wishedArticleId)
+    linearRegression3dVisualisation(wishedArticleId)
+    polynomialRegression3dVisualisation(wishedArticleId)
 
