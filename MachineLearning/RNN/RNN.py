@@ -54,7 +54,7 @@ Y = np.asanyarray(Y)
 # split dataframe into train and test sets to verify accuracy after fitting the model
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 # X_train.shape: [batch_size, timesteps, feature]
-#
+
 # initializing the rnn
 model = Sequential()  # plain stack of layers where each layer has exactly one input and one output tensor
 # # 1st layer (input)
