@@ -26,14 +26,14 @@ def linearRegressionVisualisation(articleId):
     dates = [dt.datetime.strptime(d, '%Y-%m-%d').date() for d in sales['date']]
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=int(len(dates)/10)))
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=int(len(dates) / 10)))
 
-    plt.scatter(dates, realSales, s=10, label="Sales per day")
-    plt.plot(dates, predictions, color='red', label='Prediction')
+    plt.scatter(dates, realSales, s=10, label="Verkaufsmenge am Tag")
+    plt.plot(dates, predictions, color='red', label='Vorhersage')
     plt.gcf().autofmt_xdate()
-    plt.title("Sales history for the article {}".format(articleName))
-    plt.xlabel("Date")
-    plt.ylabel("Sales")
+    plt.title("Verkaufsverlauf für das Produkt {}".format(articleName))
+    plt.xlabel("Datum")
+    plt.ylabel("Verkaufsmenge")
     plt.legend(loc="best")
     plt.show()
 
@@ -64,6 +64,8 @@ def linearRegression3dVisualisation(articleId):
     ax.xaxis.set_ticks(xAxis)
     ax.xaxis.set_ticklabels(dates)
 
+    plt.title("Sales history for the article {}".format(articleName))
+
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=int(len(dates) / 5)))
     plt.show()
 
@@ -82,12 +84,12 @@ def polynomialRegressionVisualisation(articleId):
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=int(len(dates)/10)))
 
-    plt.scatter(dates, realSales, s=10, label="Sales per day")
-    plt.plot(dates, predictions, color='red', label='Prediction')
+    plt.scatter(dates, realSales, s=10, label="Verkaufsmenge am Tag")
+    plt.plot(dates, predictions, color='red', label='Vorhersage')
     plt.gcf().autofmt_xdate()
-    plt.title("Sales history for the article {}".format(articleName))
-    plt.xlabel("Date")
-    plt.ylabel("Sales")
+    plt.title("Verkaufsverlauf für das Produkt {}".format(articleName))
+    plt.xlabel("Datum")
+    plt.ylabel("Verkaufsmenge")
     plt.legend(loc="best")
     plt.show()
 
@@ -117,6 +119,7 @@ def polynomialRegression3dVisualisation(articleId):
 
     ax.xaxis.set_ticks(xAxis)
     ax.xaxis.set_ticklabels(dates)
+    plt.title("Sales history for the article {}".format(articleName))
 
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=int(len(dates) / 5)))
     plt.show()
@@ -144,10 +147,12 @@ def RNNVisualisation(articleId):
 
 if __name__ == '__main__':
 
-    wishedArticleId = 1
+    for i in range(10):
 
-    linearRegression3dVisualisation(wishedArticleId)
-    polynomialRegression3dVisualisation(wishedArticleId)
+        polynomialRegression3dVisualisation(1)
 
-    #for i in range(10):
-     #   linearRegressionVisualisation(i+1)
+        # wishedArticleId = i +1
+        #
+        # linearRegressionVisualisation(wishedArticleId)
+        # polynomialRegressionVisualisation(wishedArticleId)
+

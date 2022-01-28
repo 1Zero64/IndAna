@@ -53,7 +53,7 @@ def evaluatePolynomialRegression(realData, predictions, articleName="Dummy"):
 
     # print evaluations
     print("\n")
-    print("Evaluation of the linear regression for the product", articleName)
+    print("Evaluation of the polynomial regression for the product", articleName)
     print("Mean Squarred Error:", round(mse, 2))
     print("Root Squarred Error:", round(rmse, 2))
     print("Mean Absolute Error:", round(mae, 2))

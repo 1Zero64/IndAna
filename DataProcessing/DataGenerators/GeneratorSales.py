@@ -131,4 +131,4 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=10000):
     return salesDataFrame
 
 if __name__ == '__main__':
-    generateSalesData(True, numberOfDataToGenerate=40000)
+    generateSalesData(True)
