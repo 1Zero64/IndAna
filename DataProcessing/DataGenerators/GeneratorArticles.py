@@ -38,7 +38,7 @@ def generateArticlesData(hasToBeGenerated=False):
 
         articlesDataFrame = pd.DataFrame(columns=columns, data=articles)
 
-        # to start dataframe index at 1
+        # to start dataframe index at 1 - AR.py
         articlesDataFrame.index = articlesDataFrame.index + 1
 
         articlesDataFrame.to_csv('../Datasets/Articles/articles.csv', index_label='ID')

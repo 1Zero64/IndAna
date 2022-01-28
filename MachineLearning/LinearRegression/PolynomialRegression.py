@@ -1,46 +1,108 @@
+# python3 LinearRegression.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Niko Kauz
+# Description: Creates a Polynomial Regression Model and predicts the sales
+# ===========================================================================================
+
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn import metrics
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+import datetime as dt
 
-data = pd.read_json("../../DataProcessing/Datasets/Sales/sales.json")
-articleDF = pd.read_csv("../../DataProcessing/Datasets/Articles/articles.csv")
+import MachineLearning.MLEvalutation as eval
+import MachineLearning.MLPreparation as mlprep
 
-dictionary = {}
-degree = 5
+import os
 
-for i in range(data.shape[0]):
-    #date = to_integer(pd.Timestamp(data.iloc[i][0]).date())
-    date = pd.Timestamp(data.iloc[i][0])
-    if date not in dictionary:
-        dictionary[date] = 0
-    for j in range(len(data.iloc[i][1])):
-        if data.iloc[i][1][j]["articleId"] == 1:
-            dictionary[date] = dictionary[date] + data.iloc[i][1][j]["quantity"]
+def polynomialRegression(articleId):
+    '''
+        Generates articles data, saves them to csv file and returns dataframe
 
-columns = ["date", "quantity"]
-data_items = dictionary.items()
-data_list = list(data_items)
-dataFrame = pd.DataFrame(data_list, columns=columns)
-dataFrame["date"] = dataFrame["date"].dt.date
+        :param articleId: (int)
+                identifier of a article
+        :return:
+            sales: (pandas.dataframe)
+                dataframe with dates and summed up sold quantities for articles
+            y: (list)
+                real sales data
+            predictions: (list)
+                predicted sales from linear regression model
+            articleName: (string)
+                name of the analyzed article
+    '''
 
-X = np.arange(dataFrame['date'].size)
-Y = dataFrame["quantity"].values
+    def getArticleName(articleId):
+        '''
+        Returns the name of the article from the articles data frame with the article id
 
-fit = np.polyfit(X, Y, deg=degree)
-fit_function = np.poly1d(fit)
-prediction = fit_function(X)
+        :param articleId: (int)
+                id of a article
+        :return:
+            articleName: (string)
+                name of the retrieved article
+        '''
+        articles = mlprep.prepareArticlesData()
+        articleName = articles.loc[articles['ID'] == articleId]['Article'][articleId - 1]
+        return articleName
 
-mse = metrics.mean_squared_error(Y, prediction)
-mae = metrics.mean_absolute_error(Y, prediction)
-rmse = (np.sqrt(mse))
-r2_sq = metrics.r2_score(Y, prediction)
+    print(os.getcwd())
 
-plt.scatter(dataFrame["date"], Y, s=5, label="Sold quantity in a day")
-plt.plot(dataFrame["date"], prediction, color='red', label='Trend')
-plt.title("Sales history for the product {} with grade {}\nMSE: {}    MAE: {}\nRMSE: {}    R-Squared: {}".format(articleDF.iloc[0]["Article"], degree, round(mse, 3), round(mae, 3), round(rmse, 3), round(r2_sq, 5)))
-plt.xlabel("Date")
-plt.ylabel("Sold quantity")
-plt.legend(loc="best")
+    # Read merged data frame, prepare column name for different articles
+    articleColumn = "articleId_" + str(articleId)
+    sales, X_train, X_test, y_train, y_test = mlprep.prepareForML()
 
-plt.show()
+    # Get last years for training
+    year = 2
+    sales = sales.tail(year * 365)
+
+    # fill NaN with 0
+    sales = sales.fillna(0)
+
+    # Make sales copy
+    salesMod = sales.copy(deep=True)
+
+    # Convert date to numeric
+    salesMod['date'] = pd.to_datetime(salesMod['date'])
+    salesMod['date'] = salesMod['date'].map(dt.datetime.toordinal)
+
+    # Degree for polynom
+    degree = 5
+
+    # Split sales in features (X) and label (y)
+    X = salesMod[['date', 'tavg']]
+    y = salesMod[articleColumn]
+    poly = PolynomialFeatures(degree=degree)
+    polyFeatures = poly.fit_transform(X)
+
+    polyModel = LinearRegression()
+    polyModel.fit(polyFeatures, y)
+
+    predictions = polyModel.predict(polyFeatures)
+
+    mse = metrics.mean_squared_error(y, predictions)
+    mae = metrics.mean_absolute_error(y, predictions)
+    rmse = (np.sqrt(mse))
+    r2_sq = metrics.r2_score(y, predictions)
+
+    # Get article name
+    articleName = getArticleName(articleId)
+
+    # evaluations of the model
+    eval.evaluatePolynomialRegression(realData=y, predictions=predictions, articleName=articleName)
+
+    # Prediction for the next day
+    nextDay = X.iloc[-1]['date']
+    polyNextDay = poly.fit_transform([[nextDay, 5]])
+    predNextDay = polyModel.predict(polyNextDay)[0]
+    print("Prediction for next day (2021-11-01):", round(predNextDay))
+
+    # Prepare data for return for last year
+    sales = sales.tail(365)
+    y = y[-365:]
+    predictions = predictions[-365:]
+
+    # return series and names
+    return sales, y, predictions, articleName

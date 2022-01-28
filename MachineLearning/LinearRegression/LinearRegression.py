@@ -1,39 +1,97 @@
+# python3 LinearRegression.py
+# -*- coding: utf-8 -*-
+# ===========================================================================================
+# Created by: Niko Kauz
+# Description: Creates a Linear Regression Model and predicts the sales
+# ===========================================================================================
+
 from sklearn.linear_model import LinearRegression
 import pandas as pd
-import matplotlib.pyplot as plt
+import datetime as dt
 
-def to_integer(dt_time):
-    return 10000*dt_time.year + 100*dt_time.month + dt_time.day
+import MachineLearning.MLEvalutation as eval
+import MachineLearning.MLPreparation as mlprep
 
-data = pd.read_json("../../DataProcessing/Datasets/Sales/sales.json")
+def linearRegression(articleId):
+    '''
+    Generates articles data, saves them to csv file and returns dataframe
 
-dictionary = {}
+    :param articleId: (int)
+            identifier of a article
+    :return:
+        sales: (pandas.dataframe)
+            dataframe with dates and summed up sold quantities for articles
+        y: (list)
+            real sales data
+        predictions: (list)
+            predicted sales from linear regression model
+        articleName: (string)
+            name of the analyzed article
+    '''
 
-for i in range(data.shape[0]):
-    date = pd.Timestamp(data.iloc[i][0]).date()
-    if date not in dictionary:
-        dictionary[date] = 0
-    for j in range(len(data.iloc[i][1])):
-        if data.iloc[i][1][j]["articleId"] == 1:
-            dictionary[date] = dictionary[date] + data.iloc[i][1][j]["quantity"]
+    def getArticleName(articleId):
+        '''
+        Returns the name of the article from the articles data frame with the article id
 
-columns = ["date", "quantity"]
-data_items = dictionary.items()
-data_list = list(data_items)
-dataFrame = pd.DataFrame(data_list, columns=columns)
-dataFrame.date = pd.to_datetime(dataFrame.date)
+        :param articleId: (int)
+                identifier of a article
+        :return:
+            articleName: (string)
+                name of the retrieved article
+        '''
+        articles = mlprep.prepareArticlesData()
+        articleName = articles.loc[articles['ID'] == articleId]['Article'][articleId-1]
+        return articleName
 
-X = dataFrame["date"].values.reshape(-1, 1)
-Y = dataFrame["quantity"].values.reshape(-1, 1)
+    # prepare column name for right article
+    articleColumn = "articleId_" + str(articleId)
 
-linear_regressor = LinearRegression().fit(X,Y)  # create object for the class
-linear_regressor.fit(X, Y)
-Y_pred = linear_regressor.predict(dataFrame["date"].values.astype(float).reshape(-1, 1))
+    # read merged data frame
+    sales, X_train, X_test, y_train, y_test = mlprep.prepareForML()
 
-plt.scatter(X, Y, s=10, label="Verkaufsmenge am Tag")
-plt.plot(X, Y_pred, color='red', label='Trend')
-plt.title("Verkaufsverlauf für das Produkt Apfel")
-plt.xlabel("Datum")
-plt.ylabel("Verkaufsmenge")
-plt.legend(loc="best")
-plt.show()
+    # Get last years for training
+    year = 2
+    sales = sales.tail(year * 365)
+
+    # Make sales copy
+    salesMod = sales.copy(deep=True)
+
+    # Convert date to numeric
+    salesMod['date'] = pd.to_datetime(salesMod['date'])
+    salesMod['date'] = salesMod['date'].map(dt.datetime.toordinal)
+
+    # Split copied data frame in features (X) and label (y)
+    X = salesMod[['date', 'tavg']]
+    y = salesMod[articleColumn]
+
+    X = X[['date', 'tavg']].fillna(0)
+    y = y.fillna(0)
+
+    # Create and fit linear regression
+    linModel = LinearRegression()
+    linModel.fit(X, y)
+
+    # Make sales predictions on data
+    predictions = linModel.predict(X)
+
+    # Get name for the article with ID from articles
+    articleName = getArticleName(articleId)
+
+    # Evaluation of the model
+    eval.evaluateLinearRegression(realData=y, predictions=predictions, articleName=articleName)
+
+    # Prediction for the next day
+    nextDay = X.iloc[-1]['date']
+    predNextDay = linModel.predict([[nextDay, 5]])[0]
+    print("Prediction for next day (2021-11-01):", round(predNextDay))
+
+    # Convert date in original data frame to object for plotting
+    sales['date'] = sales['date'].astype(object)
+
+    # Prepare data for return for last year
+    sales = sales.tail(365)
+    y = y[-365:]
+    predictions = predictions[-365:]
+
+    # return series and names
+    return sales, y, predictions, articleName

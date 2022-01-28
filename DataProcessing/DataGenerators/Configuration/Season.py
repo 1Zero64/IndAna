@@ -1,20 +1,30 @@
 # python3 Season.py
 # -*- coding: utf-8 -*-
 # ===========================================================================================
-# Created by: Kevin Hilzinger
+# Created by: Kevin Hilzinger & Niko Kauz
 # Description:
-# # articleSeasonality: specific 12 month interval season for each product
-# # (respectively each categorie in future versions)
-# # articleweight: allocation of article-specific impact of season-factor for each article
+# Returns a season weight of a article (calculated by articleSeasonality and articleWeight)
+# articleSeasonality: specific 12 month interval season for each product
+# articleWeight: allocation of article-specific impact of season-factor for each article
 # ===========================================================================================
 
 def getSeason(date, articleId):
-    return ((articleSeasonality[articleId][date.month-1]-1) * articleWeight[articleId])
-#   random Wert 50
-#   50 + (50*(1 - AR.py.5 - SARIMA-1 - AR.py))*0.9 --> 50 + 50 * 0.5 - SARIMA * 0.9
-#   x  + x*return
-#   50 + 22,5 - SARIMA = 72,5 - SARIMA -> Rundung 72
+    '''
+    calculates and returns the season weight for a article
 
+    :param date: (date)
+            date to get the article seasonality
+            articleId: (int)
+            identifier of the article to get the article seasonality and article weight
+    :return:
+        articleSeasonWeight: (float)
+            season weight for a article
+    '''
+    articleSeasonWeight = ((articleSeasonality[articleId][date.month-1]-1) * articleWeight[articleId])
+    return articleSeasonWeight
+
+
+# Seasonality weight for a product for each month
 articleSeasonality = {
         1:   [1.5, 1.2, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.7, 2.0, 1.6, 1.9], # Apfel
         2:   [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], # Milch
@@ -28,12 +38,11 @@ articleSeasonality = {
         10:   [1.2, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.1, 1.2, 1.3, 1.4], # Soup vegetables
 }
 
-#impact of seasonality on outcome article volume (value between 0.0-1 - AR.py.0)
+# impact of seasonality on outcome article volume (value between 0.0 and 2.0)
 articleWeight = {
     1: 1.0,
     2: 0.0,
     3: 0.6,
-
     4: 0.4,
     5: 0.5,
     6: 1.5,
@@ -42,26 +51,3 @@ articleWeight = {
     9: 0.7,
     10: 0.8,
 }
-
-#tupel list article - saisonality
-# list = [
-#    ([1 - AR.py, 3 - ARMA.py], [1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py, 1 - AR.py])
-#]
-#    --> produkt 3 - ARMA.py (feuerwerkskörper) : "silvester"
-#      [silvester][month(today)]
-#     menge feuerwerkskörper x = x * [silvester][month(today)]
-
-
-
-# approach
-# getSeason(sellDate, article.category, articleId)
-# ==> categorySeasonality + articleSeasonality + Grundform
-
-# deprecated
-#def getSeason(date):
-#    if isinstance(date, datetime):
-#        date = date.date()
-#    date = date.replace(year=Y)
-#    return next(season for season, (start, end) in seasons
-#                if start <= date <= end)
-

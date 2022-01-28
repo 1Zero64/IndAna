@@ -13,6 +13,10 @@ import DataProcessing.DataGenerators as dg
 import DataProcessing.DataPreparation as dp
 
 def exploreWeather():
+    '''
+    Run different statistical and visual exploration on weather data
+    '''
+    print("Explore Weather")
     # columnnames:   date, tavg (average temperature), tmin (min. temp.), tmax (max. temp.),
     #               prcp (overall precipitation/Gesamtniederschlag), snow, wdir (wind direction),
     #               wspd (wind speed), wpgt (wind peak/Spitzenboe), pres (pressure/Luftdruck),
@@ -74,9 +78,13 @@ def exploreWeather():
     # plt.legend()
     # plt.show()
 
-# exploreWeather()
 
 def exploreSales():
+    '''
+    Run different statistical and visual exploration on weather data
+    '''
+    print("Explore Sales")
+
     # get prepared data
     sales = dp.prepareSalesData()
     print(sales)
@@ -102,9 +110,13 @@ def exploreSales():
     plt.ylabel('Days')
     plt.show()
 
-# exploreSales()
 
 def exploreStockArticles():
+    '''
+    Run different statistical and visual exploration on weather data
+    '''
+    print("Explore StockArticles")
+
     # get prepared data
     stockarticles = dp.prepareStockArticlesData()
     print(stockarticles)
@@ -135,4 +147,8 @@ def exploreStockArticles():
     # plt.xlabel('Stock Ginger Bread')
     # plt.show()
 
-# exploreStockArticles()
+
+def explore():
+    exploreWeather()
+    exploreSales()
+    exploreStockArticles()

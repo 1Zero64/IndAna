@@ -2,21 +2,39 @@
 # -*- coding: utf-8 -*-
 # ===========================================================================================
 # Created by: Niko Kauz
-# Version: 1.2
 # Description:
 # # Generates sales data and writes it into a json document.
 # # This json document is located in ../Datasets/Sales/sales.json
-# # Simple approach: Date instead of DateTime and supermarkets are open at all days
-# # Updates:
-# # Updated start and end date as discussed in meeting
-# # Function returns a dataframe now with date and soldArticles
 # ===========================================================================================
 
 import json
 import pandas as pd
 import random
+import time
 
 import DataProcessing.DataGenerators.Configuration.Season as seas
+
+# Print iterations progress
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    """
+    Print total progess in console
+    :param
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        length      - Optional  : character length of bar (Int)
+        fill        - Optional  : bar fill character (Str)
+        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    # Print New Line on Complete
+    if iteration == total:
+        print()
 
 def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=10000):
     '''
@@ -48,8 +66,13 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=10000):
 
         print("Generating data and adding it to the dataframe...")
 
+        # progress bar
+        printProgressBar(0, numberOfDataToGenerate, prefix='Progress:', suffix='Complete', length=100)
         # Loop to create the first layer in json. date and soldArticles
         for sale in range(numberOfDataToGenerate):
+            # Update Progress Bar
+            time.sleep(0.1)
+            printProgressBar(sale + 1, numberOfDataToGenerate, prefix='Progress:', suffix='Complete', length=50)
 
             # Creates dictionary with random date and soldArticles list key, value pairs.
             date = dates[random.randint(0, len(dates) - 1)]
@@ -90,6 +113,7 @@ def generateSalesData(hasToBeGenerated=False, numberOfDataToGenerate=10000):
             finalJSON.append(firstLevelJSON)
             # Fill in dataframe with json data dependent on json length
             salesDataFrame.loc[sale] = [firstLevelJSON['date'], firstLevelJSON["soldArticles"]]
+
 
         print("Data and dataframe generated. Saving data to a json file...")
 

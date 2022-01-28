@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # ===========================================================================================
 # Created by: Kevin Hilzinger
-# Version: 1.2
 # Description:
 # # Generates stock article data, production dates between Jan 2020 and Sept 2021
 # # outcome article volume influenced by seasonality as introduced in def getseason
